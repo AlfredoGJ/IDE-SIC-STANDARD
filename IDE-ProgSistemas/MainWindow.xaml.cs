@@ -140,9 +140,13 @@ namespace IDE_ProgSistemas
             else
                 Errores.Text = "No se encontraron errores";
 
-            
-            
-            
+            ArchivoIntermedio.ItemsSource = App.Codigo;
+
+
+            // Tabsim
+            Tabsim.ItemsSource= App.Tabsim.ToList();
+
+
         }
 
 

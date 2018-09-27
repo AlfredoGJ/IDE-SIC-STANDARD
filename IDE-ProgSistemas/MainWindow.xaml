@@ -98,13 +98,13 @@
                                 <TextBlock Text="Operando" Grid.Column="3"/>
 
                             </Grid>-->
-                            <ListView >
+                            <ListView  Name="ArchivoIntermedio">
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Header="CP" Width="auto"/>
-                                        <GridViewColumn Header="Etiqueta" Width="auto"/>
-                                        <GridViewColumn Header="Declaracion" Width="auto"/>
-                                        <GridViewColumn Header="Operando" Width="auto"/>
+                                        <GridViewColumn Header="CP" Width="auto" DisplayMemberBinding="{Binding CP}"/>
+                                        <GridViewColumn Header="Etiqueta" Width="auto" DisplayMemberBinding="{Binding Etiqueta}"/>
+                                        <GridViewColumn Header="Declaracion" Width="auto" DisplayMemberBinding="{Binding Proposicion}"/>
+                                        <GridViewColumn Header="Operando" Width="auto" DisplayMemberBinding="{Binding Operando}"/>
                                     </GridView>
                                 </ListView.View>
                             </ListView>
@@ -112,7 +112,15 @@
                         </DockPanel>
                         <GridSplitter Grid.Column="1"    Width="8" HorizontalAlignment="Stretch" Background="LightSlateGray"/>
                         <DockPanel Grid.Column="2">
-                            <TextBlock Text="Tabsim" FontSize="20"/>
+                            <ListView  Name="Tabsim">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Simbolo" Width="auto" DisplayMemberBinding="{Binding Key}"/>
+                                        <GridViewColumn Header="Direccion" Width="auto" DisplayMemberBinding="{Binding Value}"/>
+                                      
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
                         </DockPanel>
                     </Grid>
                 </Grid>
