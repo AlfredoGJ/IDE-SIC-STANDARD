@@ -24,6 +24,7 @@ namespace IDE_ProgSistemas
         {
 
             App.ListaErrores?.Add(String.Format("Error en linea {0}, columna {1}",line,charPositionInLine));
+            App.listalinea.Add(line);
         }
     }
 }

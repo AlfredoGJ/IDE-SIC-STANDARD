@@ -10,10 +10,10 @@ namespace IDE_ProgSistemas
 
     public class CodeRow
     {
-        public int CP { get; set; }
-        public string Etiqueta { get; set;}
-        public string Proposicion { get; set;}
-        public string Operando { get; set;}
+        public string CP { get; set; }
+        public string Etiqueta { get; set; }
+        public string Proposicion { get; set; }
+        public string Operando { get; set; }
         public string CodigoObjeto { get; set; }
 
 
@@ -21,9 +21,9 @@ namespace IDE_ProgSistemas
         {
         }
 
-        public CodeRow( string etiq, string prop, string operando)
+        public CodeRow(string etiq, string prop, string operando)
         {
-            
+
             Etiqueta = etiq;
             Proposicion = prop;
             Operando = operando;
@@ -33,12 +33,13 @@ namespace IDE_ProgSistemas
 
     class MyGramarVisitor : SIC_STDBaseListener
     {
+        public string PC { get; set; }
 
         public override void EnterProposicion([NotNull] SIC_STDParser.ProposicionContext context)
         {
-            Console.WriteLine("Proposition:"+context.GetText());
+            Console.WriteLine("Proposition:" + context.GetText());
             //base.EnterProposicion(context);
-            
+
 
         }
 
@@ -46,17 +47,27 @@ namespace IDE_ProgSistemas
         {
 
 
-            CodeRow line= new CodeRow();  // Inicializacion solo para que no chille el compilador, mas adelante se cambian los valores
+            CodeRow line = new CodeRow();  // Inicializacion solo para que no chille el compilador, mas adelante se cambian los valores
 
 
             // Si la proposicion es una instruccion
             var isInstruccion = context.instruccion();
-            if ( isInstruccion!= null)
+
+
+
+            if (isInstruccion != null)
             {
                 var id = isInstruccion.ID();
                 var instruccion = isInstruccion.INSTRUCCION();
                 var operando = isInstruccion.opinstruccion();
                 line = new CodeRow(id?.GetText(), instruccion?.GetText(), operando?.GetText());
+                uint t = (uint)Int32.Parse(PC, System.Globalization.NumberStyles.HexNumber);
+                line.CP = t.ToString("X");
+                if (hayerror(context.start.Line) == false)
+                {
+                    t = t + 3;
+                    PC = t.ToString("X");
+                }
                 App.Codigo.Add(line);
             }
 
@@ -64,6 +75,8 @@ namespace IDE_ProgSistemas
             var isDirectiva = context.directiva();
             if (isDirectiva != null)
             {
+
+
                 // Si la directiva no es BYTE
                 var byteType = isDirectiva.bytedir();
                 if (byteType == null)
@@ -73,15 +86,137 @@ namespace IDE_ProgSistemas
                     var num = isDirectiva.NUM();
 
                     line = new CodeRow(id?.GetText(), directiva?.GetText(), num?.GetText());
+                    uint t = (uint)Int32.Parse(PC, System.Globalization.NumberStyles.HexNumber);
+                    line.CP = t.ToString("X");
+                    if (hayerror(context.start.Line) == false)
+                    {
+
+                        if (directiva?.GetText() == "RESW")
+                        {
+                            string c = num?.GetText();
+                            uint t1;
+
+                            if (num.GetText().Contains("H") || num.GetText().Contains("h"))
+                            {
+                                c = num?.GetText().Remove(num.GetText().Length - 1, 1);
+                                if (c != "")
+                                {
+
+                                    if (hayerror(context.start.Line) != true)
+                                    {
+                                        t = t + (t1 = (uint)Int32.Parse(c, System.Globalization.NumberStyles.HexNumber) * 3);
+                                        PC = t.ToString("X");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (c != "")
+                                {
+
+                                    line.CP = t.ToString("X");
+                                    if (hayerror(context.start.Line) != true)
+                                    {
+                                        t = t + (t1 = (uint)Int32.Parse(c) * 3);
+                                        PC = t.ToString("X");
+                                    }
+                                }
+                            }
+                        }
+                        if (directiva?.GetText() == "RESB")
+                        {
+                            string c = num?.GetText();
+
+                            if (num.GetText().Contains("H") || num.GetText().Contains("h"))
+                            {
+                                c = num?.GetText().Remove(num.GetText().Length - 1, 1);
+                                if (c != "")
+                                {
+                                    line.CP = t.ToString("X");
+                                    if (hayerror(context.start.Line) != true)
+                                    {
+                                        t = t + (uint)Int32.Parse(c, System.Globalization.NumberStyles.HexNumber);
+                                        PC = t.ToString("X");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (c != "")
+                                {
+                                    line.CP = t.ToString("X");
+                                    if (hayerror(context.start.Line) != true)
+                                    {
+                                        t = t + (uint)Int32.Parse(c);
+                                        PC = t.ToString("X");
+                                    }
+                                }
+                            }
+                        }
+                        if (directiva?.GetText() == "WORD")
+                        {
+
+                            line.CP = t.ToString("X");
+                            if (hayerror(context.start.Line) != true)
+                            {
+                                t = t + 3;
+                                PC = t.ToString("X");
+                            }
+                        }
+                    }
+
+
                     App.Codigo.Add(line);
                 }
                 // Si la directiva es BYTE
                 else
                 {
                     var id = isDirectiva.ID();
-                    var b= byteType.BYTE();
+                    var b = byteType.BYTE();
                     var operando = byteType.BYTEOP();
                     line = new CodeRow(id?.GetText(), b?.GetText(), operando?.GetText());
+                    uint P = (uint)Int32.Parse(PC, System.Globalization.NumberStyles.HexNumber);
+                    line.CP = P.ToString("X");
+
+
+
+
+                    if (!hayerror(context.start.Line))
+                    {
+                        string t = operando.GetText().Remove(1, operando.GetText().Length - 1);
+                        if (t == "C")
+                        {
+                            string J = operando.GetText().Remove(0, 2);
+                            J = J.Remove(J.Length - 1, 1);
+
+                            if (hayerror(context.start.Line) != true)
+                            {
+                                P = P + (uint)J.Length;
+                                PC = P.ToString("X");
+                            }
+                        }
+                        if (t == "X")
+                        {
+                            string J = operando.GetText().Remove(0, 2);
+                            J = J.Remove(J.Length - 1, 1);
+
+                            line.CP = P.ToString("X");
+                            if (hayerror(context.start.Line) != true)
+                            {
+                                if (J.Length % 2 == 0)
+                                {
+                                    P = P + ((uint)J.Length / 2);
+                                }
+                                else
+                                {
+                                    P = P + (((uint)J.Length + 1) / 2);
+                                }
+                                PC = P.ToString("X");
+                            }
+                        }
+                    }
+
+
                     App.Codigo.Add(line);
 
                 }
@@ -92,7 +227,14 @@ namespace IDE_ProgSistemas
             var isRsub = context.rsub();
             if (isRsub != null)
             {
-                line = new CodeRow("", isRsub.GetText().Trim(),"");
+                line = new CodeRow("", isRsub.GetText().Trim(), "");
+                uint t = (uint)Int32.Parse(PC, System.Globalization.NumberStyles.HexNumber);
+                line.CP = t.ToString("X");
+                if (hayerror(context.start.Line) != true)
+                {
+                    t = t + 3;
+                    PC = t.ToString("X");
+                }
                 App.Codigo.Add(line);
             }
 
@@ -103,16 +245,55 @@ namespace IDE_ProgSistemas
 
 
             // Se añade a la tabla de simbolos
-            if (!String.IsNullOrEmpty( line.Etiqueta))
+            if (!String.IsNullOrEmpty(line.Etiqueta))
             {
                 if (!App.Tabsim.ContainsKey(line.Etiqueta))
                 {
-                    App.Tabsim.Add(line.Etiqueta,line.CP.ToString());
+                    if (hayerror(context.Start.Line) == false)
+                    {
+                        App.Tabsim.Add(line.Etiqueta, line.CP);
+                    }
                 }
-                
+
             }
 
 
+        }
+
+     
+
+        public override void ExitFin([NotNull] SIC_STDParser.FinContext context)
+        {
+            base.ExitFin(context);
+            uint t = (uint)Int32.Parse(PC, System.Globalization.NumberStyles.HexNumber);
+            uint t1 = (uint)Int32.Parse(App.cp, System.Globalization.NumberStyles.HexNumber);
+            t = t - t1;
+            App.tamaño = t.ToString("X");
+        }
+
+        public override void ExitInicio([NotNull] SIC_STDParser.InicioContext context)
+        {
+            var START = context.Start;
+            string[] popo = START.InputStream.ToString().Split('\n', '\r');
+            string[] popo2 = popo[0].Split('\t');
+            string c = popo2[2].Remove(popo2[2].Length - 1, 1);
+            PC = c;
+            App.cp = c;
+
+        }
+
+        public bool hayerror(int line)
+        {
+            bool res = false;
+            for (int i = 0; i < App.listalinea.Count; i++)
+            {
+                if (App.listalinea[i] == line)
+                {
+                    res = true;
+                    break;
+                }
+            }
+            return res;
         }
 
         public override void ExitInstruccion([NotNull] SIC_STDParser.InstruccionContext context)
@@ -146,7 +327,5 @@ namespace IDE_ProgSistemas
 
 
         }
-
-        //public override rs
     }
 }

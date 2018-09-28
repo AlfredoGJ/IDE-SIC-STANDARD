@@ -8,12 +8,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="650" Width="1000">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="435*"/>
+            <ColumnDefinition Width="557*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <StackPanel>
+        <StackPanel Grid.ColumnSpan="2">
 
             <Menu Name="Archivo">
                 <MenuItem Header="Archivo">
@@ -25,48 +29,58 @@
 
                 <MenuItem Header="Proyecto">
                     <MenuItem Header="Analizar" Name="Analizar" Click="Analizar_Click"/>
-                  
+
 
                 </MenuItem>
             </Menu>
-         
+            <Label x:Name="tam" Content="Tamaño: " Margin="0,0,852,0" RenderTransformOrigin="0.5,0.5" Height="25">
+                <Label.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="-0.547"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Label.RenderTransform>
+            </Label>
+
         </StackPanel>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="8"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
-                
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition Height="8"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
 
-                    <DockPanel Grid.Row="0">
-                        
-                        
-                    
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0">
+
+
+
                     <avalon:TextEditor ShowLineNumbers="True" Name="CodigoFuente" FontSize="14" Margin="10,0,0,0">
-                        
+
                     </avalon:TextEditor>
-                    
-                    
-                    </DockPanel>
+
+
+                </DockPanel>
                 <GridSplitter Grid.Row="1"    Height="8" HorizontalAlignment="Stretch" Background="LightSlateGray"/>
-              
+
                 <DockPanel Grid.Row="2">
                     <ScrollViewer>
-                        <TextBlock Name="Errores" FontSize="16" />    
+                        <TextBlock Name="Errores" FontSize="16" />
                     </ScrollViewer>
-                    
+
                 </DockPanel>
-               
+
             </Grid>
-            
+
             <GridSplitter Grid.Column="1"    Width="8" HorizontalAlignment="Stretch" Background="LightSlateGray"/>
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
@@ -82,8 +96,8 @@
                             <ColumnDefinition Width="8"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        
-                        
+
+
                         <DockPanel Grid.Column="0">
                             <!--<Grid DockPanel.Dock="Top" Background="LightBlue">
                                 <Grid.ColumnDefinitions>
@@ -108,7 +122,7 @@
                                     </GridView>
                                 </ListView.View>
                             </ListView>
-                            
+
                         </DockPanel>
                         <GridSplitter Grid.Column="1"    Width="8" HorizontalAlignment="Stretch" Background="LightSlateGray"/>
                         <DockPanel Grid.Column="2">
@@ -117,7 +131,7 @@
                                     <GridView>
                                         <GridViewColumn Header="Simbolo" Width="auto" DisplayMemberBinding="{Binding Key}"/>
                                         <GridViewColumn Header="Direccion" Width="auto" DisplayMemberBinding="{Binding Value}"/>
-                                      
+
                                     </GridView>
                                 </ListView.View>
                             </ListView>
@@ -132,7 +146,7 @@
                             <ColumnDefinition Width="8"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        
+
                         <DockPanel Grid.Column="2">
                             <TextBlock Text="Registros (codigo objeto)" FontSize="20"/>
                         </DockPanel>
@@ -141,5 +155,5 @@
             </Grid>
         </Grid>
     </Grid>
-   
+
 </Window>

@@ -11,7 +11,14 @@ namespace IDE_ProgSistemas
     {
         public override void ReportError(Parser recognizer, RecognitionException e)
         {
-            RecoverInline(recognizer);      
+            try
+            {
+                RecoverInline(recognizer);
+            }
+            catch
+            {
+
+            }
         }
 
     }

@@ -90,6 +90,8 @@ namespace IDE_ProgSistemas
 
         private void Analizar_Click(object sender, RoutedEventArgs e)
         {
+            tam.Content = "";
+            tam.Content = "tamaño: ";
 
             // Clean Errors list, tabsim, archivo intermedio, interfaz, etc. 
             ClearEverything();
@@ -145,8 +147,7 @@ namespace IDE_ProgSistemas
 
             // Tabsim
             Tabsim.ItemsSource= App.Tabsim.ToList();
-
-
+            tam.Content += App.tamaño;
         }
 
 
