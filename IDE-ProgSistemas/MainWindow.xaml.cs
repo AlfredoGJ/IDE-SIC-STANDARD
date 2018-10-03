@@ -148,12 +148,100 @@ namespace IDE_ProgSistemas
             // Tabsim
             Tabsim.ItemsSource= App.Tabsim.ToList();
             tam.Content += App.tamaño;
+
+            Paso2();
+
+
+
         }
+
+        private void Paso2()
+        {
+
+            foreach (CodeRow row in App.Codigo)
+            {
+
+                // Si es una proposicion que genera codigo objeto
+                if (row.Proposicion != "START" & row.Proposicion != "END" & row.Proposicion != "RESW" & row.Proposicion != "RESB")
+                {
+                    // Si es una instruccion
+                    if (row.Proposicion != "BYTE" && row.Proposicion != "WORD")
+                    {
+                        string opCode = App.OpCodes[row.Proposicion].ToString("X2");
+                        string symbol;
+                        char[] sep = new char[1];
+                        sep[0] = ',';
+
+                        // si tiene operando (no es instruccion RSUB)
+                        if (!string.IsNullOrEmpty(row.Operando))
+                        {
+                            // Si el modo de direccionamiento es indeado
+                            if (row.Operando.Contains(','))
+                                symbol = row.Operando.Split(sep)[0].Trim();
+                            // El modo de direccionamiento es directo
+                            else
+                                symbol = row.Operando;
+
+                            row.CodigoObjeto = opCode + App.Tabsim[symbol];
+
+                        }
+                        // Es la instruccion RSUB
+                        else
+                            row.CodigoObjeto = "4C0000";
+                    }
+
+                    // Es una directiva
+                    else
+                    {
+                        if (row.Proposicion == "WORD")
+                        {
+                            char[] sep = new char[] { 'h', 'H' };
+                            int value = 0;
+                            if (row.Operando.Contains('h') || row.Operando.Contains('H'))
+                                value = Convert.ToInt32(row.Operando.Trim(sep), 16);
+                            else
+                                value = Convert.ToInt32(row.Operando);
+
+                            row.CodigoObjeto = value.ToString("X6");
+                        }
+
+                        if (row.Proposicion == "BYTE")
+                        {
+                        }
+                    }
+
+
+
+
+
+                }
+                else
+                    row.CodigoObjeto = "--------";
+
+
+                    
+
+
+                }
+
+            }
+
+          
+        
 
 
         private void ClearEverything()
         {
             Errores.Text = "";
+            Tabsim.ItemsSource = null;
+            Tabsim.Items.Clear();
+
+            ArchivoIntermedio.ItemsSource = null;
+            ArchivoIntermedio.Items.Clear();
+
+            App.ListaErrores.Clear();
+            App.Codigo.Clear();
+            App.Tabsim.Clear();
         }
 
         private void testGrammar()

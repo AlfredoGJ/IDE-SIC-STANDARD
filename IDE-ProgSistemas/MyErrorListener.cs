@@ -16,7 +16,8 @@ namespace IDE_ProgSistemas
         public override void SyntaxError([NotNull] IRecognizer recognizer, [Nullable] IToken offendingSymbol, int line, int charPositionInLine, [NotNull] string msg, [Nullable] RecognitionException e)
         {
 
-          
+            App.ListaErrores?.Add(String.Format("Error en linea {0}, columna {1}", line, charPositionInLine));
+            App.listalinea.Add(line);
         }
 
         // Recibe los errores del Lexer

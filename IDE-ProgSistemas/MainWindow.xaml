@@ -119,6 +119,7 @@
                                         <GridViewColumn Header="Etiqueta" Width="auto" DisplayMemberBinding="{Binding Etiqueta}"/>
                                         <GridViewColumn Header="Declaracion" Width="auto" DisplayMemberBinding="{Binding Proposicion}"/>
                                         <GridViewColumn Header="Operando" Width="auto" DisplayMemberBinding="{Binding Operando}"/>
+                                        <GridViewColumn Header="Código objeto" Width="auto" DisplayMemberBinding="{Binding CodigoObjeto}"/>
                                     </GridView>
                                 </ListView.View>
                             </ListView>

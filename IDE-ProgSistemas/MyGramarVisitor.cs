@@ -37,8 +37,7 @@ namespace IDE_ProgSistemas
 
         public override void EnterProposicion([NotNull] SIC_STDParser.ProposicionContext context)
         {
-            Console.WriteLine("Proposition:" + context.GetText());
-            //base.EnterProposicion(context);
+           
 
 
         }
@@ -54,7 +53,6 @@ namespace IDE_ProgSistemas
             var isInstruccion = context.instruccion();
 
 
-
             if (isInstruccion != null)
             {
                 var id = isInstruccion.ID();
@@ -68,6 +66,7 @@ namespace IDE_ProgSistemas
                     t = t + 3;
                     PC = t.ToString("X");
                 }
+               
                 App.Codigo.Add(line);
             }
 
@@ -266,19 +265,30 @@ namespace IDE_ProgSistemas
         {
             base.ExitFin(context);
             uint t = (uint)Int32.Parse(PC, System.Globalization.NumberStyles.HexNumber);
-            uint t1 = (uint)Int32.Parse(App.cp, System.Globalization.NumberStyles.HexNumber);
+            uint t1 = (uint)Int32.Parse(App.direccionInicio, System.Globalization.NumberStyles.HexNumber);
             t = t - t1;
             App.tamaño = t.ToString("X");
+
+            CodeRow final = new CodeRow("","END",context.ID()?.GetText());
+            final.CP = PC;
+            App.Codigo.Add(final);
         }
 
         public override void ExitInicio([NotNull] SIC_STDParser.InicioContext context)
         {
-            var START = context.Start;
-            string[] popo = START.InputStream.ToString().Split('\n', '\r');
-            string[] popo2 = popo[0].Split('\t');
-            string c = popo2[2].Remove(popo2[2].Length - 1, 1);
-            PC = c;
-            App.cp = c;
+            // Si no hubo error
+            if (context.exception == null)
+            {
+                var dirInicio = context.NUM().GetText().Replace('H', ' ').Replace('h',' ');
+                var id = context.ID();
+                CodeRow inicio = new CodeRow(id?.GetText(),"START", dirInicio);
+                inicio.CP = inicio.Operando;
+                App.direccionInicio= inicio.CP;
+                PC = inicio.CP;
+                App.Codigo.Add(inicio);
+
+            }
+           
 
         }
 
