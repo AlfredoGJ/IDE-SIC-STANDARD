@@ -188,7 +188,13 @@ namespace IDE_ProgSistemas
                             }
                             else
                             {
-                                row.CodigoObjeto = "Error etiqueta no encontrada";
+                                if (row.Proposicion.Contains("X"))
+                                {
+                                    row.CodigoObjeto = App.OpCodes[row.Proposicion].ToString("X2") + "FFFF";
+                                }
+                                else{
+                                    row.CodigoObjeto = App.OpCodes[row.Proposicion].ToString("X2") + "7FFF";
+                                }
                             }
 
                         }
@@ -214,17 +220,40 @@ namespace IDE_ProgSistemas
 
                         if (row.Proposicion == "BYTE")
                         {
+                            string J = "";
                             if (row.Operando != null)
                             {
                                 string codigo = "";
-                                string J = row.Operando.Remove(0, 2);
-                                J = J.Remove(J.Length - 1, 1);
-                                for (int i = 0; i < J.Length; i++)
+                                 J = row.Operando.Remove(1, row.Operando.Length-1);
+                                if (J == "X")
                                 {
-                                    int o = Encoding.ASCII.GetBytes(J[i].ToString())[0];
-                                    codigo += o.ToString();
+                                    J = row.Operando.Remove(0, 2);
+                                    J = J.Remove(J.Length - 1, 1);
+                                    if (J.Length % 2 == 0)
+                                    {
+                                        
+                                    }
+                                    else
+                                    {
+                                        codigo += "0";
+                                    }
+                                    for (int i = 0; i < J.Length; i++)
+                                    {
+                                        codigo += J[i].ToString();
+                                    }
+                                    row.CodigoObjeto = codigo;
                                 }
-                                row.CodigoObjeto = codigo;
+                                else
+                                {
+                                    J = row.Operando.Remove(0, 2);
+                                    J = J.Remove(J.Length - 1, 1);
+                                    for (int i = 0; i < J.Length; i++)
+                                    {
+                                        int o = Encoding.ASCII.GetBytes(J[i].ToString())[0];
+                                        codigo += o.ToString();
+                                    }
+                                    row.CodigoObjeto = codigo;
+                                }
                             }
                             else
                             {
