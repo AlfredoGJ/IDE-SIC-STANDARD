@@ -19,6 +19,7 @@ namespace IDE_ProgSistemas
         public static List<int> listalinea = new List<int>();
         public static string direccionInicio = "";
         public static string tamaño = "";
+        public static string nombre = "";
 
         //public static Dictionary<String, int> OpCodes = new Dictionary<String, int>()
         //{

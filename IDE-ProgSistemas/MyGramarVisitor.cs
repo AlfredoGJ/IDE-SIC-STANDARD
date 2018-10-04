@@ -279,6 +279,7 @@ namespace IDE_ProgSistemas
             // Si no hubo error
             if (context.exception == null)
             {
+                App.nombre = context.Start.Text;
                 var dirInicio = context.NUM().GetText().Replace('H', ' ').Replace('h',' ');
                 var id = context.ID();
                 CodeRow inicio = new CodeRow(id?.GetText(),"START", dirInicio);

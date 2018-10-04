@@ -150,7 +150,7 @@ namespace IDE_ProgSistemas
             tam.Content += App.tamaño;
 
             Paso2();
-
+            generaresgistros();
 
 
         }
@@ -182,7 +182,14 @@ namespace IDE_ProgSistemas
                             else
                                 symbol = row.Operando;
 
-                            row.CodigoObjeto = opCode + App.Tabsim[symbol];
+                            if (App.Tabsim.ContainsKey(symbol))
+                            {
+                                row.CodigoObjeto = opCode + App.Tabsim[symbol];
+                            }
+                            else
+                            {
+                                row.CodigoObjeto = "Error etiqueta no encontrada";
+                            }
 
                         }
                         // Es la instruccion RSUB
@@ -207,6 +214,22 @@ namespace IDE_ProgSistemas
 
                         if (row.Proposicion == "BYTE")
                         {
+                            if (row.Operando != null)
+                            {
+                                string codigo = "";
+                                string J = row.Operando.Remove(0, 2);
+                                J = J.Remove(J.Length - 1, 1);
+                                for (int i = 0; i < J.Length; i++)
+                                {
+                                    int o = Encoding.ASCII.GetBytes(J[i].ToString())[0];
+                                    codigo += o.ToString();
+                                }
+                                row.CodigoObjeto = codigo;
+                            }
+                            else
+                            {
+                                row.CodigoObjeto = "Error de Sintaxis";
+                            }
                         }
                     }
 
@@ -217,15 +240,57 @@ namespace IDE_ProgSistemas
                 }
                 else
                     row.CodigoObjeto = "--------";
-
-
-                    
-
-
                 }
 
             }
 
+
+        private void generaresgistros()
+        {
+            List<string> Registros = new List<string>();
+            string h = "H";
+            h += App.nombre;
+
+            for(int i = 0; i < (6 - App.nombre.Length); i++)
+            {
+                h += "_";
+            }
+            string g = App.direccionInicio.Remove(App.direccionInicio.Length - 1, 1);
+            h += "00"+ g;
+            h += "00" + App.tamaño;
+            Registros.Add(h);
+            string T = "";
+            bool ban = false;
+            T = "T00" + g;
+            for(int i = 1; i < App.Codigo.Count-1; i++)
+            {
+               
+                if(ban == false && (App.Codigo[i].CodigoObjeto.Contains("-")==true || App.Codigo[i].CodigoObjeto.Contains("r")==true))
+                {
+
+                    T = "";
+                    T += "T";
+                    T += "00" + App.Codigo[i].CP;
+                    ban = true;
+                }
+
+                if (!App.Codigo[i].CodigoObjeto.Contains("-") && !App.Codigo[i].CodigoObjeto.Contains("r"))
+                {
+                    T += App.Codigo[i].CodigoObjeto;
+                }
+                else
+                {
+                    if (T != ("T00" + App.Codigo[i].CP))
+                    {
+                        ban = false;
+                        Registros.Add(T);
+                    }
+                }
+            }
+
+            string E = "";
+
+        }
           
         
 
