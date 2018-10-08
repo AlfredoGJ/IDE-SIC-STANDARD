@@ -249,15 +249,15 @@ namespace IDE_ProgSistemas
                                     J = J.Remove(J.Length - 1, 1);
                                     for (int i = 0; i < J.Length; i++)
                                     {
-                                        int o = Encoding.ASCII.GetBytes(J[i].ToString())[0];
-                                        codigo += o.ToString();
+                                        //int  /*Encoding.ASCII.GetBytes(J[i].ToString())[0];*/
+                                        codigo +=  ((byte)J[i]).ToString("X2");
                                     }
                                     row.CodigoObjeto = codigo;
                                 }
                             }
                             else
                             {
-                                row.CodigoObjeto = "Error de Sintaxis";
+                                row.CodigoObjeto = "--------";
                             }
                         }
                     }
@@ -284,40 +284,61 @@ namespace IDE_ProgSistemas
             {
                 h += "_";
             }
+
             string g = App.direccionInicio.Remove(App.direccionInicio.Length - 1, 1);
             h += "00"+ g;
             h += "00" + App.tamaño;
             Registros.Add(h);
-            string T = "";
-            bool ban = false;
-            T = "T00" + g;
-            for(int i = 1; i < App.Codigo.Count-1; i++)
+
+
+            string T = "T";
+            int bytes = 0;
+            foreach (CodeRow line in App.Codigo)
             {
-               
-                if(ban == false && (App.Codigo[i].CodigoObjeto.Contains("-")==true || App.Codigo[i].CodigoObjeto.Contains("r")==true))
+                if (line.Proposicion != "START" && line.Proposicion != "END")
                 {
-
-                    T = "";
-                    T += "T";
-                    T += "00" + App.Codigo[i].CP;
-                    ban = true;
-                }
-
-                if (!App.Codigo[i].CodigoObjeto.Contains("-") && !App.Codigo[i].CodigoObjeto.Contains("r"))
-                {
-                    T += App.Codigo[i].CodigoObjeto;
-                }
-                else
-                {
-                    if (T != ("T00" + App.Codigo[i].CP))
+                    if ((line.CodigoObjeto.Contains('-') || (line.CodigoObjeto.Length/2)+bytes>=60))
                     {
-                        ban = false;
-                        Registros.Add(T);
+                        if (T != "T")
+                        {
+                            T = T.Insert(7, bytes.ToString("X2"));
+                            Registros.Add(T);
+                            T = "T";
+                            bytes = 0;
+                        }
+                    }
+                    else
+                    {
+                        if (bytes == 0)
+                            T=T.Insert(1, "00"+line.CP);
+                       
+
+                        int codigoObjeto;
+                        if (Int32.TryParse(line.CodigoObjeto, out codigoObjeto))
+                        {
+                            uint codiggoObjeto = (uint)Int32.Parse(line.CodigoObjeto, System.Globalization.NumberStyles.HexNumber);
+                            T += codigoObjeto.ToString("X"+line.CodigoObjeto.Length.ToString());
+                            bytes += line.CodigoObjeto.Length / 2;
+                        }
                     }
                 }
             }
 
-            string E = "";
+            string E = "E";
+            foreach (CodeRow line in App.Codigo)
+            {
+                if (App.OpCodes.ContainsKey(line.Proposicion))
+                {
+                    E += "00" + line.CP;
+                    break;
+                }
+            }
+
+            Registros.Add(E);
+            foreach (string r in Registros)
+            {
+                CodigoObjeto.Text += r + '\n';
+            }
 
         }
           
@@ -333,6 +354,8 @@ namespace IDE_ProgSistemas
             ArchivoIntermedio.ItemsSource = null;
             ArchivoIntermedio.Items.Clear();
 
+
+            CodigoObjeto.Text = "";
             App.ListaErrores.Clear();
             App.Codigo.Clear();
             App.Tabsim.Clear();

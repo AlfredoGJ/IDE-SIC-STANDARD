@@ -142,14 +142,10 @@
                 <GridSplitter Height="8" Grid.Row="1" HorizontalAlignment="Stretch" Background="LightSlateGray"/>
                 <Grid Grid.Row="2">
                     <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="8"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
+                        
 
                         <DockPanel Grid.Column="2">
-                            <TextBlock Text="Registros (codigo objeto)" FontSize="20"/>
+                            <TextBlock Name="CodigoObjeto" Text="" FontSize="16"/>
                         </DockPanel>
                     </Grid>
                 </Grid>
