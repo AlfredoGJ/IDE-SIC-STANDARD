@@ -30,6 +30,9 @@ namespace IDE_ProgSistemas
         {
             InitializeComponent();
             //testGrammar();
+
+            Window memmap = new MapaMemoria(25,255, "prueba");
+            memmap.Show();
         }
 
         private void Archivo_Nuevo_Click(object sender, RoutedEventArgs e)
