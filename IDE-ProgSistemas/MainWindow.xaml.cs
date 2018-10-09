@@ -276,6 +276,7 @@ namespace IDE_ProgSistemas
 
         private void generaresgistros()
         {
+            bool ban = false;
             List<string> Registros = new List<string>();
             string h = "H";
             h += App.nombre;
@@ -301,24 +302,70 @@ namespace IDE_ProgSistemas
                     {
                         if (T != "T")
                         {
+                            if ((line.CodigoObjeto.Length / 2) + bytes >= 60 && !line.CodigoObjeto.Contains('-'))
+                            {
+                                ban = false;
+                            }
+
                             T = T.Insert(7, bytes.ToString("X2"));
                             Registros.Add(T);
                             T = "T";
                             bytes = 0;
+
                         }
+                        
                     }
                     else
                     {
+                        ban = true;
                         if (bytes == 0)
                             T=T.Insert(1, "00"+line.CP);
                        
 
-                        int codigoObjeto;
-                        if (Int32.TryParse(line.CodigoObjeto, out codigoObjeto))
+                        
+                        try
                         {
+                            
                             uint codiggoObjeto = (uint)Int32.Parse(line.CodigoObjeto, System.Globalization.NumberStyles.HexNumber);
-                            T += codigoObjeto.ToString("X"+line.CodigoObjeto.Length.ToString());
+                            T += codiggoObjeto.ToString("X" + line.CodigoObjeto.Length.ToString());
                             bytes += line.CodigoObjeto.Length / 2;
+                        }
+                        catch
+                        {
+
+                        }
+                        
+                    }
+                    if (!line.CodigoObjeto.Contains('-') && ban!=true )
+                    {
+                        if (bytes == 0)
+                            T = T.Insert(1, "00" + line.CP);
+
+
+
+                        try
+                        {
+
+                            uint codiggoObjeto = (uint)Int32.Parse(line.CodigoObjeto, System.Globalization.NumberStyles.HexNumber);
+                            T += codiggoObjeto.ToString("X" + line.CodigoObjeto.Length.ToString());
+                            bytes += line.CodigoObjeto.Length / 2;
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                }
+                else
+                {
+                    if ( line.Proposicion == "END")
+                    {
+                        if (T != "T")
+                        {
+                            T = T.Insert(7, bytes.ToString("X2"));
+                            Registros.Add(T);
+                            T = "T";
+                            bytes = 0;
                         }
                     }
                 }
@@ -339,11 +386,23 @@ namespace IDE_ProgSistemas
             {
                 CodigoObjeto.Text += r + '\n';
             }
+            creararchivo(Registros);
 
         }
           
         
+        private void creararchivo(List<string> registros)
+        {
+            FileStream regi = new FileStream(Directory.GetCurrentDirectory()+"//Registros"+App.nombre, FileMode.OpenOrCreate, FileAccess.Write);
+            StreamWriter WRITER = new StreamWriter(regi);
 
+            for(int i = 0; i < registros.Count; i++)
+            {
+                WRITER.WriteLine(registros[i]);
+            }
+            WRITER.Close();
+            regi.Close();
+        }
 
         private void ClearEverything()
         {
