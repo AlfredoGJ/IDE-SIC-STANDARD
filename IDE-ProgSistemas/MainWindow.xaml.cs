@@ -31,8 +31,7 @@ namespace IDE_ProgSistemas
             InitializeComponent();
             //testGrammar();
 
-            Window memmap = new MapaMemoria(25,255, "prueba");
-            memmap.Show();
+           
         }
 
         private void Archivo_Nuevo_Click(object sender, RoutedEventArgs e)
@@ -446,6 +445,14 @@ namespace IDE_ProgSistemas
             //parser.proposicion();
         }
 
+        private void CargarCObjeto_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(CodigoObjeto.Text))
+            {
+                Window mapa = new MapaMemoria(CodigoObjeto.Text);
+                mapa.Show();
+            } 
+        }
     }
     }
 

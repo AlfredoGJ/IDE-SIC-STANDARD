@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static IDE_ProgSistemas.App;
 
 namespace IDE_ProgSistemas
 {
@@ -20,9 +21,20 @@ namespace IDE_ProgSistemas
     /// </summary>
     public partial class MapaMemoria : Window
     {
-        public MapaMemoria(int dirInicio,int tamanio, string nombre)
+        public MapaMemoria(string rgs)
         {
             InitializeComponent();
+
+            int dirInicio;
+            int tamanio;
+            string nombre;
+            char[] sep = { '\n' };
+
+            string[] registros = rgs.Split(sep);
+
+            nombre = registros[0].Substring(1,6);
+            dirInicio = Convert.ToInt32( registros[0].Substring(7, 6),16);
+            tamanio= Convert.ToInt32(registros[0].Substring(13, 6), 16);
 
             NombrePrograma.Text = nombre;
             DirInicio.Text=dirInicio.ToString("X4");
@@ -32,8 +44,16 @@ namespace IDE_ProgSistemas
             {
                 Mapa.Items.Add(new MemorySlot(i));
             }
+
+            Dictionary<string, MyInt> reg = new Dictionary<string, MyInt>() { {"CP",new MyInt(255) },{"A", new MyInt(255) },{"X", new MyInt(255) },{"L", new MyInt(255) }, { "SW", new MyInt(255) }, { "CC", new MyInt(255) } };
+            
+            Registros.ItemsSource = reg; 
+
         }
     }
+
+
+
 
     public class MemorySlot
     {

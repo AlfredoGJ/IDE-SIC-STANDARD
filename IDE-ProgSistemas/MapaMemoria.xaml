@@ -5,13 +5,12 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:IDE_ProgSistemas"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="610"
       Title="MapaMemoria">
 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="600"/>
-            <ColumnDefinition />
+            <ColumnDefinition Width="160" />
         </Grid.ColumnDefinitions>
         
         <Grid.RowDefinitions>
@@ -68,9 +67,19 @@
                 </GridView>
             </ListView.View>
             
-        </ListView>           
-                   
-        
+        </ListView>
+
+        <ListView  Name="Registros" Grid.Column="1" Grid.Row="1" Margin="20">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Registro" Width="auto" DisplayMemberBinding="{Binding Key}"/>
+                    <GridViewColumn Header="Valor" Width="auto" DisplayMemberBinding="{Binding Value.HEX4 }"/>
+
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+
     </Grid>
         
 </Window>

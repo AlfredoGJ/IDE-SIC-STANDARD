@@ -82,7 +82,16 @@ namespace IDE_ProgSistemas
             {"WD", 0xDC}
         };
 
+        public class MyInt
+        {
 
+            public string HEX2 { get => value.ToString("X2"); }
+            public string HEX4 { get => value.ToString("X4"); }
+            public string HEX6 { get => value.ToString("X6"); }
+            private int value;
+            public MyInt(int val)
+            { value = val; }
+        }
 
 
 

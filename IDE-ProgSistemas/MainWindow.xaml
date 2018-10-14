@@ -144,9 +144,18 @@
                     <Grid>
                         
 
-                        <DockPanel Grid.Column="2">
-                            <TextBlock Name="CodigoObjeto" Text="" FontSize="16"/>
-                        </DockPanel>
+                        <Grid Grid.Column="2">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="36"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Name="CodigoObjeto" Text="" FontSize="16" Grid.Row="0" />
+                            <Button Height="30" Grid.Row="1" Name="CargarCObjeto" Click="CargarCObjeto_Click">
+                                Cargar
+                            </Button>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
