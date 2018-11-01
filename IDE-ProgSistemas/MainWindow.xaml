@@ -19,11 +19,12 @@
 
         <StackPanel Grid.ColumnSpan="2">
 
-            <Menu Name="Archivo">
+            <Menu Name="Archivo" Background="LightSlateGray">
                 <MenuItem Header="Archivo">
                     <MenuItem Header="Nuevo" Name="Archivo_Nuevo" Click="Archivo_Nuevo_Click"/>
                     <MenuItem Header="Abrir" Name="Abrir_Archivo" Click="Abrir_Archivo_Click"/>
                     <MenuItem Header="Guardar" Name="Guardar_Archivo" Click="Guardar_Archivo_Click"/>
+                    <MenuItem Header="Cargar Obj" Name="Cargar_obj" Click="Cargar_obj_Click"/>
 
                 </MenuItem>
 
@@ -64,7 +65,7 @@
 
 
 
-                    <avalon:TextEditor ShowLineNumbers="True" Name="CodigoFuente" FontSize="14" Margin="10,0,0,0">
+                    <avalon:TextEditor ShowLineNumbers="True" Name="CodigoFuente" FontSize="14" Margin="10,0,0,0" Background="#3f3f3f"  Foreground="White">
 
                     </avalon:TextEditor>
 
@@ -112,7 +113,7 @@
                                 <TextBlock Text="Operando" Grid.Column="3"/>
 
                             </Grid>-->
-                            <ListView  Name="ArchivoIntermedio">
+                            <ListView  Name="ArchivoIntermedio" Background="#3f3f3f" Foreground="White">
                                 <ListView.View>
                                     <GridView>
                                         <GridViewColumn Header="CP" Width="auto" DisplayMemberBinding="{Binding CP}"/>
@@ -127,7 +128,7 @@
                         </DockPanel>
                         <GridSplitter Grid.Column="1"    Width="8" HorizontalAlignment="Stretch" Background="LightSlateGray"/>
                         <DockPanel Grid.Column="2">
-                            <ListView  Name="Tabsim">
+                            <ListView  Name="Tabsim" Background="#3f3f3f" Foreground="White">
                                 <ListView.View>
                                     <GridView>
                                         <GridViewColumn Header="Simbolo" Width="auto" DisplayMemberBinding="{Binding Key}"/>

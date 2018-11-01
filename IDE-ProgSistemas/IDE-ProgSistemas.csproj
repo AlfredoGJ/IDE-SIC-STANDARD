@@ -67,6 +67,7 @@
     <Compile Include="MapaMemoria.xaml.cs">
       <DependentUpon>MapaMemoria.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MemoryMap.cs" />
     <Compile Include="MyErrorListener.cs" />
     <Compile Include="MyErrorStrategy.cs" />
     <Compile Include="MyGramarVisitor.cs" />

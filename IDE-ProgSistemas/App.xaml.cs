@@ -84,13 +84,15 @@ namespace IDE_ProgSistemas
 
         public class MyInt
         {
+            public int Value { get => valueInt; set =>valueInt = value; }
+            public string HEX2 { get => valueInt.ToString("X2"); }
+            public string HEX4 { get => valueInt.ToString("X4"); }
+            public string HEX6 { get => valueInt.ToString("X6"); }
+            private int valueInt;
 
-            public string HEX2 { get => value.ToString("X2"); }
-            public string HEX4 { get => value.ToString("X4"); }
-            public string HEX6 { get => value.ToString("X6"); }
-            private int value;
             public MyInt(int val)
-            { value = val; }
+            
+            { valueInt = val; }
         }
 
 

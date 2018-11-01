@@ -45,7 +45,7 @@ namespace IDE_ProgSistemas
         {
             ClearEverything();
             OpenFileDialog openFile = new OpenFileDialog();
-
+            openFile.Filter = "ASM Files (*.asm)|*.ASM";
             if (openFile.ShowDialog() == true)
             {
                 Stream stream = File.OpenRead(openFile.FileName);
@@ -72,7 +72,7 @@ namespace IDE_ProgSistemas
 
             SaveFileDialog g = new SaveFileDialog();
             // guardar en el archivo original
-            g.Filter = "s Files (*.s)|*.s";
+            
             if (g.ShowDialog() == true)
             {
                 Stream stream = File.Create(g.FileName);
@@ -263,11 +263,6 @@ namespace IDE_ProgSistemas
                             }
                         }
                     }
-
-
-
-
-
                 }
                 else
                     row.CodigoObjeto = "--------";
@@ -395,7 +390,7 @@ namespace IDE_ProgSistemas
         
         private void creararchivo(List<string> registros)
         {
-            FileStream regi = new FileStream(Directory.GetCurrentDirectory()+"//Registros"+App.nombre, FileMode.OpenOrCreate, FileAccess.Write);
+            FileStream regi = new FileStream(currentFilePath +".obj", FileMode.OpenOrCreate, FileAccess.Write);
             StreamWriter WRITER = new StreamWriter(regi);
 
             for(int i = 0; i < registros.Count; i++)
@@ -452,6 +447,31 @@ namespace IDE_ProgSistemas
                 Window mapa = new MapaMemoria(CodigoObjeto.Text);
                 mapa.Show();
             } 
+        }
+
+        private void Cargar_obj_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFile = new OpenFileDialog();
+            openFile.Filter= "obj Files (*.obj)|*.obj";
+            if (openFile.ShowDialog() == true)
+            {
+                Stream stream = File.OpenRead(openFile.FileName);
+                currentFilePath = openFile.FileName;
+                byte[] data = new byte[stream.Length];
+                stream.Read(data, 0, (int)stream.Length);
+                string sinput = "";
+                foreach (byte c in data)
+                {
+                    sinput += (char)c;
+                }
+
+                stream.Close();
+                MapaMemoria mapa = new MapaMemoria(sinput);
+                mapa.Show();
+
+
+
+            }
         }
     }
     }

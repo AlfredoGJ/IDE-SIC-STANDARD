@@ -5,55 +5,40 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:IDE_ProgSistemas"
       mc:Ignorable="d" 
-      Title="MapaMemoria">
+      Title="MapaMemoria" Width="822">
 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="600"/>
-            <ColumnDefinition Width="160" />
+            <ColumnDefinition MinWidth="200" />
         </Grid.ColumnDefinitions>
-        
+
         <Grid.RowDefinitions>
-            <RowDefinition MaxHeight="100"/>
-            <RowDefinition/>
+            <!--<RowDefinition MaxHeight="100"/>-->
+            <!--<RowDefinition/>-->
         </Grid.RowDefinitions>
 
 
+        <Grid Grid.Column="0" Grid.Row="1" Margin="20">
 
-        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" Margin="20" >
-
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Programa: " FontSize="16"/>
-                <TextBlock Name="NombrePrograma" FontSize="16"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Dirección: " FontSize="16"/>
-                <TextBlock Name="DirInicio" FontSize="16"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Tamaño: " FontSize="16"/>
-                <TextBlock Name="TamanoPrograma" FontSize="16"/>
-            </StackPanel>
-
-
-
-        </StackPanel>
-        
-        <ListView Name="Mapa" Grid.Column="0" Grid.Row="1" Margin="20" FontSize="16">
-            <ListView.View>
-                <GridView >
-                    <GridViewColumn Header="Slot"  Width="50" DisplayMemberBinding="{Binding Address}"/>
-                    <GridViewColumn Header="0"  Width="30" DisplayMemberBinding="{Binding B0}" />
-                    <GridViewColumn Header="1"  Width="30" DisplayMemberBinding="{Binding B1}" />
+            <Grid.RowDefinitions>
+                <RowDefinition MinHeight="260"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            
+            <ListView Name="Mapa" Grid.Column="0" Grid.Row="0"  FontSize="16">
+                <ListView.View>
+                    <GridView >
+                        <GridViewColumn Header="Slot"  Width="50" DisplayMemberBinding="{Binding Address}"/>
+                        <GridViewColumn Header="0"  Width="30" DisplayMemberBinding="{Binding B0}" />
+                        <GridViewColumn Header="1"  Width="30" DisplayMemberBinding="{Binding B1}" />
                         <GridViewColumn Header="2" Width="30" DisplayMemberBinding="{Binding B2}"/>
                         <GridViewColumn Header="3" Width="30" DisplayMemberBinding="{Binding B3}"/>
                         <GridViewColumn Header="4" Width="30" DisplayMemberBinding="{Binding B4}"/>
                         <GridViewColumn Header="5" Width="30" DisplayMemberBinding="{Binding B5}"/>
                         <GridViewColumn Header="6" Width="30" DisplayMemberBinding="{Binding B6}"/>
-                    <GridViewColumn Header="7" Width="30" DisplayMemberBinding="{Binding B7}"/>
-                    <GridViewColumn Header="8" Width="30" DisplayMemberBinding="{Binding B8}"/>
+                        <GridViewColumn Header="7" Width="30" DisplayMemberBinding="{Binding B7}"/>
+                        <GridViewColumn Header="8" Width="30" DisplayMemberBinding="{Binding B8}"/>
                         <GridViewColumn Header="9" Width="30" DisplayMemberBinding="{Binding B9}"/>
                         <GridViewColumn Header="A" Width="30" DisplayMemberBinding="{Binding BA}"/>
                         <GridViewColumn Header="B" Width="30" DisplayMemberBinding="{Binding BB}"/>
@@ -61,25 +46,111 @@
                         <GridViewColumn Header="D" Width="30" DisplayMemberBinding="{Binding BD}"/>
                         <GridViewColumn Header="E" Width="30" DisplayMemberBinding="{Binding BE}"/>
                         <GridViewColumn Header="F" Width="30" DisplayMemberBinding="{Binding BF}"/>
+
+
+
+                    </GridView>
+                </ListView.View>
+
+            </ListView>
+
+            <Grid Grid.Row="1">
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                
+                <Grid Grid.Row="0">
+                    <Grid Grid.Row="1" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+
+                        </Grid.ColumnDefinitions>
+                        
+
+                        
+                        <StackPanel  Grid.Column="0">
+                            <TextBlock>Instruccion Actual</TextBlock>
+                            <TextBlock Name="InstActual"></TextBlock>
+                        </StackPanel>
+                        <StackPanel  Grid.Column="1">
+                            <TextBlock>Efecto</TextBlock>
+                            <TextBlock Name="Efecto"></TextBlock>
+                        </StackPanel>
+                        <StackPanel  Grid.Column="2">
+
+                        </StackPanel>
+
+
+                    </Grid>
+                </Grid>
+                
+                <Grid Grid.Row="1" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        
+                    </Grid.ColumnDefinitions>
                     
+                    <Button Content="Start" Grid.Column="0" Click="Button_Click"/>
+                    <Button Content="Next Instruction" Grid.Column="1" Click="Button_Click_1"/>
+                    <!--<Button Content="Start" Grid.Column="2"/>-->
                     
-                    
-                </GridView>
-            </ListView.View>
+                </Grid>
+                
+            </Grid>
             
-        </ListView>
+        </Grid>
 
-        <ListView  Name="Registros" Grid.Column="1" Grid.Row="1" Margin="20">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Registro" Width="auto" DisplayMemberBinding="{Binding Key}"/>
-                    <GridViewColumn Header="Valor" Width="auto" DisplayMemberBinding="{Binding Value.HEX4 }"/>
+        
 
-                </GridView>
-            </ListView.View>
-        </ListView>
+
+        <Grid Grid.Column="1" Margin="20">
+            
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <ListView  Name="Registros" Grid.Row="1" Grid.ColumnSpan="2">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Registro" Width="auto" DisplayMemberBinding="{Binding Key}"/>
+                        <GridViewColumn Header="Valor" Width="auto" DisplayMemberBinding="{Binding Value.HEX4 }"/>
+
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" >
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Programa: " FontSize="16"/>
+                    <TextBlock Name="NombrePrograma" FontSize="16"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Dirección: " FontSize="16"/>
+                    <TextBlock Name="DirInicio" FontSize="16"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Tamaño: " FontSize="16"/>
+                    <TextBlock Name="TamanoPrograma" FontSize="16"/>
+                </StackPanel>
+
+
+
+            </StackPanel>
+
+        </Grid>
+
 
 
     </Grid>
-        
+
 </Window>
