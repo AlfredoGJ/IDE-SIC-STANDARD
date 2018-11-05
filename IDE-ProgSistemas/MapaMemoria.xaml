@@ -66,22 +66,25 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
                             <ColumnDefinition/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition MinWidth="300"/>
 
                         </Grid.ColumnDefinitions>
                         
 
                         
                         <StackPanel  Grid.Column="0">
-                            <TextBlock>Instruccion Actual</TextBlock>
-                            <TextBlock Name="InstActual"></TextBlock>
+                            <TextBlock>Código objeto</TextBlock>
+                            <TextBlock Name="Objeto" FontSize="16" Foreground="DarkSlateBlue"></TextBlock>
                         </StackPanel>
+                        
                         <StackPanel  Grid.Column="1">
-                            <TextBlock>Efecto</TextBlock>
-                            <TextBlock Name="Efecto"></TextBlock>
+                            <TextBlock>Instruccion</TextBlock>
+                            <TextBlock Name="Instruccion" FontSize="16" Foreground="DarkSlateBlue"></TextBlock>
                         </StackPanel>
+                        
                         <StackPanel  Grid.Column="2">
-
+                            <TextBlock>Efecto</TextBlock>
+                            <TextBlock Name="Efecto" FontSize="16" Foreground="DarkSlateBlue"></TextBlock>
                         </StackPanel>
 
 
@@ -96,10 +99,21 @@
                         
                     </Grid.ColumnDefinitions>
                     
-                    <Button Content="Start" Grid.Column="0" Click="Button_Click"/>
-                    <Button Content="Next Instruction" Grid.Column="1" Click="Button_Click_1"/>
-                    <!--<Button Content="Start" Grid.Column="2"/>-->
-                    
+                    <Button Content="Ejecutar" Grid.Column="0" Name="StartButton" Click="StartButton_Click"/>
+                    <Button Content="Siguiente Instruccion" Grid.Column="1" Name="NextInstruction" Click="NextInstruction_Click"/>
+                    <ListBox Grid.Column="2" Name="NumeroInstrucciones">
+                        <ListViewItem Content="10"/>
+                        <ListViewItem Content="9"/>
+                        <ListViewItem Content="8"/>
+                        <ListViewItem Content="7"/>
+                        <ListViewItem Content="6"/>
+                        <ListViewItem Content="5"/>
+                        <ListViewItem Content="4"/>
+                        <ListViewItem Content="3"/>
+                        <ListViewItem Content="2"/>
+                        <ListViewItem Content="1"/>
+                    </ListBox>
+
                 </Grid>
                 
             </Grid>
@@ -120,7 +134,7 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Registro" Width="auto" DisplayMemberBinding="{Binding Key}"/>
-                        <GridViewColumn Header="Valor" Width="auto" DisplayMemberBinding="{Binding Value.HEX4 }"/>
+                        <GridViewColumn Header="Valor" Width="auto"   DisplayMemberBinding="{Binding Value.HEX6 }"/>
 
                     </GridView>
                 </ListView.View>

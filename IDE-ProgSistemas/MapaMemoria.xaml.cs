@@ -16,14 +16,16 @@ using static IDE_ProgSistemas.App;
 
 namespace IDE_ProgSistemas
 {
+    delegate void ExecuteInstruction(int m);
+
     /// <summary>
     /// Lógica de interacción para MapaMemoria.xaml
     /// </summary>
     public partial class MapaMemoria : Window
     {
-        delegate void ExecuteInstruction(int m);
+        
         Dictionary<int, Tuple<string, string, ExecuteInstruction>> Instructions;
-        Dictionary<string, MyInt> Registers = new Dictionary<string, MyInt>() { { "CP", new MyInt(255) }, { "A", new MyInt(255) }, { "X", new MyInt(255) }, { "L", new MyInt(255) }, { "SW", new MyInt(255) }, { "CC", new MyInt(255) } };
+        Dictionary<string, MyInt> Registers;
         MemoryMap MemoryMap;
         int FirstInstructionAddress;
 
@@ -73,6 +75,8 @@ namespace IDE_ProgSistemas
                 }    
             }
 
+            Registers["CP"].Value = FirstInstructionAddress; 
+
             Mapa.ItemsSource = MemoryMap.Slots ;
             Registros.ItemsSource = Registers; 
 
@@ -96,7 +100,7 @@ namespace IDE_ProgSistemas
             Instructions.Add(04, new Tuple<string, string, ExecuteInstruction>("LDX", "X <-- (m...m+2)", LDX));
             Instructions.Add(32, new Tuple<string, string, ExecuteInstruction>("MUL", "A <-- (A) * (m...m+2)", MUL));
             Instructions.Add(68, new Tuple<string, string, ExecuteInstruction>("OR", "A <-- (A) | (m...m+2)", OR));
-            //Instructtions.Add(00, new Tuple<string, string, ExecuteInstruction>("RD", "", RD));
+            Instructions.Add(216, new Tuple<string, string, ExecuteInstruction>("RD", "", RD));
             Instructions.Add(76, new Tuple<string, string, ExecuteInstruction>("RSUB", "PC <-- (L)", RSUB));
             Instructions.Add(12, new Tuple<string, string, ExecuteInstruction>("STA", "m...m+2 <-- (A)",STA));
             Instructions.Add(84, new Tuple<string, string, ExecuteInstruction>("STCH", "m <-- (A) [el byte más a la derecha]", STCH));
@@ -104,14 +108,51 @@ namespace IDE_ProgSistemas
             Instructions.Add(232, new Tuple<string, string, ExecuteInstruction>("STSW", "m...m+2 <-- (SW)", STSW));
             Instructions.Add(16, new Tuple<string, string, ExecuteInstruction>("STX", "m...m+2 <-- (X)", STX));
             Instructions.Add(28, new Tuple<string, string, ExecuteInstruction>("SUB", "A <-- (A) - (m...m+2)", SUB));
-            Instructions.Add(44, new Tuple<string, string, ExecuteInstruction>("SUB", "X <-- (X) + 1 ; (X) : (m...m+2)", TIX));
+            Instructions.Add(224, new Tuple<string, string, ExecuteInstruction>("TD", "", TD));
+            Instructions.Add(44, new Tuple<string, string, ExecuteInstruction>("TIX", "X <-- (X) + 1 ; (X) : (m...m+2)", TIX));
+            Instructions.Add(220, new Tuple<string, string, ExecuteInstruction>("WD", "", WD));
+
+
+            Registers = new Dictionary<string, MyInt>()
+            {
+              { "CP", new MyInt(0xffffff)},
+              { "A", new MyInt(0xffffff) },
+              { "X", new MyInt(0xffffff) },
+              { "L", new MyInt(0xffffff) },
+              { "SW", new MyInt(0xffffff)},
+              { "CC", new MyInt(0xffffff)}
+            };
+
+        }
+
+        private void WD(int m)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void TD(int m)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void RD(int m)
+        {
+            throw new NotImplementedException();
         }
 
         private void TIX(int m)
         {
-            throw new NotImplementedException();
+            int X = Registers["X"].Value + 1;
+            Registers["X"].Value = X;
 
+            if (X < MemoryMap.ReadWord(m))
+                Registers["CC"].Value = 0xffffff;  //valor para < 
 
+            if (X == MemoryMap.ReadWord(m))
+                Registers["CC"].Value = 0x00;  //valor para =
+
+            if (X > MemoryMap.ReadWord(m))
+                Registers["CC"].Value = 0x0fffff;  //valor para > 
         }
 
         private void SUB(int m)
@@ -131,7 +172,7 @@ namespace IDE_ProgSistemas
 
         private void STL(int m)
         {
-            throw new NotImplementedException();
+            MemoryMap.WriteWord(m,Registers["L"].HEX6);
         }
 
         private void STCH(int m)
@@ -141,7 +182,7 @@ namespace IDE_ProgSistemas
 
         private void STA(int m)
         {
-            throw new NotImplementedException();
+            MemoryMap.WriteWord(m,Registers["A"].HEX6);
         }
 
         private void RSUB(int m)
@@ -161,7 +202,7 @@ namespace IDE_ProgSistemas
 
         private void LDX(int m)
         {
-            throw new NotImplementedException();
+            Registers["X"].Value = MemoryMap.ReadWord(m);
         }
 
         private void LDL(int m)
@@ -176,17 +217,19 @@ namespace IDE_ProgSistemas
 
         private void LDA(int m)
         {
-            throw new NotImplementedException();
+            Registers["X"].Value = MemoryMap.ReadWord(m);
         }
 
         private void JSUB(int m)
         {
-            throw new NotImplementedException();
+            Registers["L"].Value = Registers["CP"].Value;
+            Registers["CP"].Value = m;
         }
 
         private void JLT(int m)
         {
-            throw new NotImplementedException();
+            if (Registers["CC"].Value == 0xffffff)
+                Registers["CP"].Value = m;
         }
 
         private void JGT(int m)
@@ -216,76 +259,67 @@ namespace IDE_ProgSistemas
 
         private void ADD(int m)
         {
-            Console.WriteLine("Se hizo suma bien perra");
-            Registers["A"] = new MyInt(Registers["A"].Value + MemoryMap.ReadWord(m));
+            Registers["A"].Value = Registers["A"].Value + MemoryMap.ReadWord(m);
         }
         private void AND(int m)
         {
             Console.WriteLine("Se hizo AND bien perra");
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+       
+
+      
+
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            /*var first = FirstInstructionAddress;
-            var g = MemoryMap.ReadInstruction(first)*/
-            
+            Fetch();
+        }
+
+        private void NextInstruction_Click(object sender, RoutedEventArgs e)
+        {
 
         }
 
-        private void ejecutaInstruccion(int m)
+        private void Fetch()
         {
-            /*for (int i = 0; i < Instructions.Count; i++)
+            var instruction = MemoryMap.ReadInstruction(Registers["CP"].Value);
+            Objeto.Text = instruction.Item4;
+            if (instruction.Item2)
             {
-                
-                    case Instructions[i].
-                
-            */
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-
-        }
-    }
-
-
-
-
-    public class MemorySlot
-    {
-
-        public string B0 { get =>values[0].ToString("X2"); set=> values[0] = Convert.ToInt32( value); }
-        public string B1 { get => values[1].ToString("X2"); set => values[1] = Convert.ToInt32(value); }
-        public string B2 { get => values[2].ToString("X2"); set => values[2] = Convert.ToInt32(value); }
-        public string B3 { get => values[3].ToString("X2"); set => values[3] = Convert.ToInt32(value); }
-        public string B4 { get => values[4].ToString("X2"); set => values[4] = Convert.ToInt32(value); }
-        public string B5 { get => values[5].ToString("X2"); set => values[5] = Convert.ToInt32(value); }
-        public string B6 { get => values[6].ToString("X2"); set => values[6] = Convert.ToInt32(value); }
-        public string B7 { get => values[7].ToString("X2"); set => values[7] = Convert.ToInt32(value); }
-        public string B8 { get => values[8].ToString("X2"); set => values[8] = Convert.ToInt32(value); }
-        public string B9 { get => values[9].ToString("X2"); set => values[9] = Convert.ToInt32(value); }
-        public string BA { get => values[10].ToString("X2"); set => values[10] = Convert.ToInt32(value); }
-        public string BB { get => values[11].ToString("X2"); set => values[11] = Convert.ToInt32(value); }
-        public string BC { get => values[12].ToString("X2"); set => values[12] = Convert.ToInt32(value); }
-        public string BD { get => values[13].ToString("X2"); set => values[13] = Convert.ToInt32(value); }
-        public string BE{ get => values[14].ToString("X2"); set => values[14] = Convert.ToInt32(value); }
-        public string BF { get => values[15].ToString("X2"); set => values[15] = Convert.ToInt32(value); }
-
-        public string Address { get => address.ToString("X4"); set => address= Convert.ToInt32(value); }
-        public int AddresNum { get => address; }
-        private int address;
-        private List<int> values;
-        public List<int> Values { get=> values; }
-
-        public MemorySlot(int address)
-        {
-            this.address = address;
-            values = new List<int>();
-            for (int i = 0; i < 16; i++)
-            {
-                values.Add(255);
+                Instruccion.Text = Instructions[instruction.Item1].Item1 + " " + instruction.Item3.ToString("X4") + ", X";
             }
-            
+            else
+            {
+                Instruccion.Text = Instructions[instruction.Item1].Item1 + " " + instruction.Item3.ToString("X4");
+            }
+            Efecto.Text = Instructions[instruction.Item1].Item2;
+
+            var m = instruction.Item3;
+            var instructionDelegate = Instructions[instruction.Item1].Item3;
+
+
+            //Se incrementa el CP
+            Registers["CP"].Value = Registers["CP"].Value + 3;
+
+            // Se manda llamar a la funcion de la instruccion
+            instructionDelegate.Invoke(m);
+            UpdateView();
+
         }
+
+        private void UpdateView()
+        {
+            Mapa.ItemsSource = null;
+            Registros.ItemsSource = null;
+            Mapa.ItemsSource = MemoryMap.Slots;
+            Registros.ItemsSource = Registers;
+        }
+
     }
+
+
+
+
+   
 }

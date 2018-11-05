@@ -58,20 +58,10 @@ namespace IDE_ProgSistemas
         {
             
             string word="";
-            for (int i = address; i < address+3; i++)
+            for (int i = 0; i <3; i++)
             {
-               
-                int absoluteAddress = i - slots[0].AddresNum;
 
-                if (absoluteAddress >= 0 && absoluteAddress <= slots.LastOrDefault().AddresNum)
-                {
-                    int slot = (absoluteAddress / 16); // Localidad de memoria donde se encuentra el byte
-                    int offset = (absoluteAddress % 16); // Posicion en la localidad de memoria donde se encuentra el byte
-                    word+= slots[slot].Values[offset].ToString("X2");
-
-
-
-                }
+                word = word+ReadByte(address+i).ToString("X2");
                 
             }
             return Convert.ToInt32(word, 16);
@@ -81,15 +71,30 @@ namespace IDE_ProgSistemas
 
         }
 
-        public Tuple<int, int> ReadInstruction(int address)
+        public void WriteWord(int address, string word)
         {
-            Tuple<int, int> instruction;
+
+            for (int i=0;i<3;i++)
+            {
+                    WriteByte(address+i,Convert.ToInt32( word.Substring(i*2,2),16));
+            }
+
+
+          
+        }
+
+
+        // Lee la instruccion y regresa ina tupla con(codigo de operacion,es indexada o no, m,el codigo objeto en una cadena)
+        public Tuple<int,bool, int,string> ReadInstruction(int address)
+        {
+            Tuple<int,bool, int, string> instruction;
 
             int opcode = ReadByte(address);
             int m;
             string mString = "";
+            bool isIndexed=false;
             
-            for (int i = address; i < address+2; i++)
+            for (int i = address+1; i <= address+2; i++)
             {
                 int absoluteAddress = i - slots[0].AddresNum;
                 if (absoluteAddress >= 0 && absoluteAddress <= slots.LastOrDefault().AddresNum)
@@ -104,10 +109,20 @@ namespace IDE_ProgSistemas
 
             }
 
-            m= Convert.ToInt32(mString,16);
 
-            instruction = new Tuple<int, int>(opcode,m);
+            
+            m= Convert.ToInt32(mString,16);
+            if (m >= 32768)
+            {
+                m = m - 32768;
+                isIndexed = true;
+            }
+            mString = opcode.ToString("X2") + mString;
+
+
+            instruction = new Tuple<int,bool, int,string>(opcode,isIndexed,m,mString);
             return instruction;
+
 
         }
     }
