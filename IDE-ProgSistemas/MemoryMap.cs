@@ -65,10 +65,6 @@ namespace IDE_ProgSistemas
                 
             }
             return Convert.ToInt32(word, 16);
-
-
-
-
         }
 
         public void WriteWord(int address, string word)

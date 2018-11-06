@@ -28,11 +28,13 @@ namespace IDE_ProgSistemas
         Dictionary<string, MyInt> Registers;
         MemoryMap MemoryMap;
         int FirstInstructionAddress;
+        string numero = "";
 
         public MapaMemoria(string rgs)
         {
+            
             InitializeComponent();
-
+           
             FillInstructions();
 
             int dirInicio;
@@ -78,7 +80,8 @@ namespace IDE_ProgSistemas
             Registers["CP"].Value = FirstInstructionAddress; 
 
             Mapa.ItemsSource = MemoryMap.Slots ;
-            Registros.ItemsSource = Registers; 
+            Registros.ItemsSource = Registers;
+            
 
         }
 
@@ -127,17 +130,17 @@ namespace IDE_ProgSistemas
 
         private void WD(int m)
         {
-            throw new NotImplementedException();
+            
         }
 
         private void TD(int m)
         {
-            throw new NotImplementedException();
+            
         }
 
         private void RD(int m)
         {
-            throw new NotImplementedException();
+            
         }
 
         private void TIX(int m)
@@ -153,21 +156,22 @@ namespace IDE_ProgSistemas
 
             if (X > MemoryMap.ReadWord(m))
                 Registers["CC"].Value = 0x0fffff;  //valor para > 
+
         }
 
         private void SUB(int m)
         {
-            throw new NotImplementedException();
+            Registers["A"].Value = MemoryMap.ReadWord(Registers["A"].Value) - MemoryMap.ReadWord(m);
         }
 
         private void STX(int m)
         {
-            throw new NotImplementedException();
+            MemoryMap.WriteWord(m,Registers["X"].HEX6);
         }
 
         private void STSW(int m)
         {
-            throw new NotImplementedException();
+            MemoryMap.WriteWord(m, Registers["SW"].HEX6);
         }
 
         private void STL(int m)
@@ -177,27 +181,31 @@ namespace IDE_ProgSistemas
 
         private void STCH(int m)
         {
-            throw new NotImplementedException();
+            string t = Registers["A"].HEX6.Substring(3,2);
+            MemoryMap.WriteByte(m, Convert.ToInt32(t,16));
         }
 
         private void STA(int m)
         {
-            MemoryMap.WriteWord(m,Registers["A"].HEX6);
+
+            MemoryMap.WriteWord(m,MemoryMap.ReadWord(Registers["A"].Value).ToString("X6"));
         }
 
+        //CHECAR 
         private void RSUB(int m)
         {
-            throw new NotImplementedException();
+            Registers["CP"].Value = MemoryMap.ReadWord(Registers["L"].Value);
         }
 
+        
         private void OR(int m)
         {
-            throw new NotImplementedException();
+            Registers["A"].Value = MemoryMap.ReadWord(Registers["A"].Value) | MemoryMap.ReadWord(m);
         }
 
         private void MUL(int m)
         {
-            throw new NotImplementedException();
+            Registers["A"].Value = MemoryMap.ReadWord(Registers["A"].Value) * MemoryMap.ReadWord(m);
         }
 
         private void LDX(int m)
@@ -207,7 +215,7 @@ namespace IDE_ProgSistemas
 
         private void LDL(int m)
         {
-            throw new NotImplementedException();
+            Registers["L"].Value = MemoryMap.ReadWord(m);
         }
 
         private void LDCH(int m)
@@ -222,7 +230,7 @@ namespace IDE_ProgSistemas
 
         private void JSUB(int m)
         {
-            Registers["L"].Value = Registers["CP"].Value;
+            Registers["L"].Value = MemoryMap.ReadWord(Registers["CP"].Value);
             Registers["CP"].Value = m;
         }
 
@@ -234,36 +242,52 @@ namespace IDE_ProgSistemas
 
         private void JGT(int m)
         {
-            throw new NotImplementedException();
+            if(Registers["CC"].Value == 0x0fffff)
+            {
+                Registers["CP"].Value = m;
+            }
         }
 
         private void JEQ(int m)
         {
-            throw new NotImplementedException();
+            if (Registers["CC"].Value == 0x00)
+            {
+                Registers["CP"].Value = m;
+            }
         }
 
         private void J(int m)
-        {
-            throw new NotImplementedException();
+        {  
+                Registers["CP"].Value = m;
         }
 
         private void DIV(int m)
         {
-            throw new NotImplementedException();
+            Registers["A"].Value = MemoryMap.ReadWord(Registers["A"].Value) / MemoryMap.ReadWord(m);
         }
 
         private void COMP(int m)
         {
-            throw new NotImplementedException();
+            
+
+            if (MemoryMap.ReadWord(Registers["A"].Value) < MemoryMap.ReadWord(m))
+                Registers["CC"].Value = 0xffffff;  //valor para < 
+
+            if (MemoryMap.ReadWord(Registers["A"].Value) < MemoryMap.ReadWord(m))
+                Registers["CC"].Value = 0x00;  //valor para =
+
+            if (MemoryMap.ReadWord(Registers["A"].Value) < MemoryMap.ReadWord(m))
+                Registers["CC"].Value = 0x0fffff;  //valor para > 
         }
 
         private void ADD(int m)
         {
             Registers["A"].Value = Registers["A"].Value + MemoryMap.ReadWord(m);
         }
+
         private void AND(int m)
         {
-            Console.WriteLine("Se hizo AND bien perra");
+            Registers["A"].Value = MemoryMap.ReadWord(Registers["A"].Value) & MemoryMap.ReadWord(m);
         }
 
        
@@ -273,27 +297,38 @@ namespace IDE_ProgSistemas
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            Fetch();
+            if (NumeroInstrucciones.Text == "")
+            {
+                NumeroInstrucciones.Text = "1";
+            }
+            for (int i = 0; i <Int32.Parse(NumeroInstrucciones.Text); i++)
+            {
+                Fetch();
+            }
         }
 
         private void NextInstruction_Click(object sender, RoutedEventArgs e)
         {
-
+            Fetch();
         }
+
+
+        
 
         private void Fetch()
         {
+
             var instruction = MemoryMap.ReadInstruction(Registers["CP"].Value);
-            Objeto.Text = instruction.Item4;
+            Objeto.Text += instruction.Item4+"\n";
             if (instruction.Item2)
             {
-                Instruccion.Text = Instructions[instruction.Item1].Item1 + " " + instruction.Item3.ToString("X4") + ", X";
+                Instruccion.Text += Instructions[instruction.Item1].Item1 + " " + instruction.Item3.ToString("X4") + ", X\n";
             }
             else
             {
-                Instruccion.Text = Instructions[instruction.Item1].Item1 + " " + instruction.Item3.ToString("X4");
+                Instruccion.Text += Instructions[instruction.Item1].Item1 + " " + instruction.Item3.ToString("X4")+"\n";
             }
-            Efecto.Text = Instructions[instruction.Item1].Item2;
+            Efecto.Text += Instructions[instruction.Item1].Item2+"\n";
 
             var m = instruction.Item3;
             var instructionDelegate = Instructions[instruction.Item1].Item3;
@@ -316,6 +351,23 @@ namespace IDE_ProgSistemas
             Registros.ItemsSource = Registers;
         }
 
+        private void ListViewItem_Selected(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void Grid_KeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F12)
+            {
+                Fetch();
+            }
+        }
     }
 
 

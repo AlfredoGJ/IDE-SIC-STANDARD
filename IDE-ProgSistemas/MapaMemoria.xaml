@@ -5,12 +5,16 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:IDE_ProgSistemas"
       mc:Ignorable="d" 
-      Title="MapaMemoria" Width="822">
+      Title="MapaMemoria" Width="822" KeyUp="Window_KeyUp">
 
-    <Grid>
+
+    <Grid KeyDown="Grid_KeyDown">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="600"/>
-            <ColumnDefinition MinWidth="200" />
+            <ColumnDefinition MinWidth="600" Width="435*"/>
+            <ColumnDefinition Width="165*"/>
+            <ColumnDefinition Width="14*"/>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition MinWidth="200" Width="200*" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -19,13 +23,13 @@
         </Grid.RowDefinitions>
 
 
-        <Grid Grid.Column="0" Grid.Row="1" Margin="20">
+        <Grid Grid.Column="0" Margin="20,20,6,20" Grid.ColumnSpan="3">
 
             <Grid.RowDefinitions>
                 <RowDefinition MinHeight="260"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            
+
             <ListView Name="Mapa" Grid.Column="0" Grid.Row="0"  FontSize="16">
                 <ListView.View>
                     <GridView >
@@ -55,76 +59,80 @@
             </ListView>
 
             <Grid Grid.Row="1">
-                
+
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
-                
-                <Grid Grid.Row="0">
-                    <Grid Grid.Row="1" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition MinWidth="300"/>
 
-                        </Grid.ColumnDefinitions>
-                        
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Grid.Row="0">
+                        <Grid Grid.Row="1" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="13*"/>
+                                <ColumnDefinition Width="6*"/>
+                                <ColumnDefinition Width="7*"/>
+                                <ColumnDefinition MinWidth="300" Width="30*"/>
 
-                        
-                        <StackPanel  Grid.Column="0">
-                            <TextBlock>Código objeto</TextBlock>
-                            <TextBlock Name="Objeto" FontSize="16" Foreground="DarkSlateBlue"></TextBlock>
-                        </StackPanel>
-                        
-                        <StackPanel  Grid.Column="1">
-                            <TextBlock>Instruccion</TextBlock>
-                            <TextBlock Name="Instruccion" FontSize="16" Foreground="DarkSlateBlue"></TextBlock>
-                        </StackPanel>
-                        
-                        <StackPanel  Grid.Column="2">
-                            <TextBlock>Efecto</TextBlock>
-                            <TextBlock Name="Efecto" FontSize="16" Foreground="DarkSlateBlue"></TextBlock>
-                        </StackPanel>
+                            </Grid.ColumnDefinitions>
 
 
+
+                            <StackPanel  Grid.Column="0">
+                                <TextBlock>Código objeto</TextBlock>
+                                <TextBlock Name="Objeto" FontSize="16" Foreground="DarkSlateBlue"></TextBlock>
+                            </StackPanel>
+
+                            <StackPanel  Grid.Column="1" Grid.ColumnSpan="2">
+                                <TextBlock>Instruccion</TextBlock>
+                                <TextBlock Name="Instruccion" FontSize="16" Foreground="DarkSlateBlue"></TextBlock>
+                            </StackPanel>
+
+                            <StackPanel  Grid.Column="3">
+                                <TextBlock>Efecto</TextBlock>
+                                <TextBlock Name="Efecto" FontSize="16" Foreground="DarkSlateBlue"></TextBlock>
+                            </StackPanel>
+
+
+
+                        </Grid>
                     </Grid>
-                </Grid>
-                
+                </ScrollViewer>
+
                 <Grid Grid.Row="1" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
-                        
+
                     </Grid.ColumnDefinitions>
-                    
+
                     <Button Content="Ejecutar" Grid.Column="0" Name="StartButton" Click="StartButton_Click"/>
-                    <Button Content="Siguiente Instruccion" Grid.Column="1" Name="NextInstruction" Click="NextInstruction_Click"/>
-                    <ListBox Grid.Column="2" Name="NumeroInstrucciones">
-                        <ListViewItem Content="10"/>
-                        <ListViewItem Content="9"/>
-                        <ListViewItem Content="8"/>
-                        <ListViewItem Content="7"/>
-                        <ListViewItem Content="6"/>
-                        <ListViewItem Content="5"/>
-                        <ListViewItem Content="4"/>
-                        <ListViewItem Content="3"/>
-                        <ListViewItem Content="2"/>
-                        <ListViewItem Content="1"/>
-                    </ListBox>
+                    <Button Content="Siguiente Instruccion" Grid.Column="1" Name="NextInstruction" Click="NextInstruction_Click" HorizontalAlignment="Left" Width="186"/>
+                    <ComboBox Grid.Column="2" Name="NumeroInstrucciones" HorizontalAlignment="Left" Width="187">
+                        <ComboBoxItem Content="10"/>
+                        <ComboBoxItem Content="9"/>
+                        <ComboBoxItem Content="8"/>
+                        <ComboBoxItem Content="7"/>
+                        <ComboBoxItem Content="6"/>
+                        <ComboBoxItem Content="5"/>
+                        <ComboBoxItem Content="4"/>
+                        <ComboBoxItem Content="3"/>
+                        <ComboBoxItem Content="2"/>
+                        <ComboBoxItem Content="1"/>
+                    </ComboBox>
 
                 </Grid>
-                
+
             </Grid>
-            
+
         </Grid>
 
-        
 
 
-        <Grid Grid.Column="1" Margin="20">
-            
+
+        <Grid Grid.Column="3" Margin="20" Grid.ColumnSpan="2">
+
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition/>
@@ -166,5 +174,6 @@
 
 
     </Grid>
+
 
 </Window>
