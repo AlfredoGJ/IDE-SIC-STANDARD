@@ -28,6 +28,8 @@ namespace IDE_ProgSistemas
         Dictionary<string, MyInt> Registers;
         MemoryMap MemoryMap;
         int FirstInstructionAddress;
+        int ProgramSize;
+        int StartAddress;
         string numero = "";
 
         public MapaMemoria(string rgs)
@@ -37,22 +39,22 @@ namespace IDE_ProgSistemas
            
             FillInstructions();
 
-            int dirInicio;
-            int tamanio;
+        
+            
             string nombre;
             char[] sep = { '\n','\r' };
 
             string[] registros = rgs.Split(sep);
 
             nombre = registros[0].Substring(1,6);
-            dirInicio = Convert.ToInt32( registros[0].Substring(7, 6),16);
-            tamanio= Convert.ToInt32(registros[0].Substring(13, 6), 16);
+            StartAddress = Convert.ToInt32( registros[0].Substring(7, 6),16);
+            ProgramSize= Convert.ToInt32(registros[0].Substring(13, 6), 16);
 
             NombrePrograma.Text = nombre;
-            DirInicio.Text=dirInicio.ToString("X4");
-            TamanoPrograma.Text = tamanio.ToString("X4");
+            DirInicio.Text=StartAddress.ToString("X4");
+            TamanoPrograma.Text = ProgramSize.ToString("X4");
 
-            MemoryMap = new MemoryMap(dirInicio,tamanio);
+            MemoryMap = new MemoryMap(StartAddress,ProgramSize);
 
 
             foreach (string registro in registros)
@@ -306,47 +308,70 @@ namespace IDE_ProgSistemas
             }
             for (int i = 0; i <Int32.Parse(NumeroInstrucciones.Text); i++)
             {
-                Fetch();
+                if (!Fetch())
+                    Objeto.Text = "Programa Terminado !";
+
+                // Se actualiza la interfaz
+                UpdateView();
             }
         }
 
         private void NextInstruction_Click(object sender, RoutedEventArgs e)
         {
             Fetch();
+            UpdateView();
         }
 
 
         
 
-        private void Fetch()
+        private bool Fetch()
         {
 
-            var instruction = MemoryMap.ReadInstruction(Registers["CP"].Value);
-            Objeto.Text += instruction.Item4+"\n";
             int m;
-            if (instruction.Item2)
-            {
-                Instruccion.Text += Instructions[instruction.Item1].Item1 + " " + instruction.Item3.ToString("X4") + ", X\n";
-                m = instruction.Item3+Registers["X"].Value;
-            }
-            else
-            {
-                Instruccion.Text += Instructions[instruction.Item1].Item1 + " " + instruction.Item3.ToString("X4")+"\n";
-                m = instruction.Item3;
-            }
-            Efecto.Text += Instructions[instruction.Item1].Item2+"\n";
 
-            
-            var instructionDelegate = Instructions[instruction.Item1].Item3;
-
+            // Se leen 3 bytes de memoria en la direccion de memoria que indica el CP
+            // ReaInstruction ya realiza la decodificacion de la instruccion
+            var instruction = MemoryMap.ReadInstruction(Registers["CP"].Value);
 
             //Se incrementa el CP
             Registers["CP"].Value = Registers["CP"].Value + 3;
 
-            // Se manda llamar a la funcion de la instruccion
-            instructionDelegate.Invoke(m);
+            // Si es una instruccion valida
+            if (Instructions.ContainsKey(instruction.Item1))
+            {
+                // Si la instruccion es indexada
+                if (instruction.Item2)
+                {
+                    Instruccion.Text += Instructions[instruction.Item1].Item1 + " " + instruction.Item3.ToString("X4") + ", X\n";
+                    m = instruction.Item3 + Registers["X"].Value;
+                }
+                // Si la instruccion no es indexada
+                else
+                {
+                    Instruccion.Text += Instructions[instruction.Item1].Item1 + " " + instruction.Item3.ToString("X4") + "\n";
+                    m = instruction.Item3;
+                }
 
-            UpdateView();
+                // Se verifica que el programa no se salga del area de memoria
+                if (!(m <= StartAddress + ProgramSize && m >= StartAddress))
+                    return false;
+
+                // Cambio de valores en la interfaz
+                Efecto.Text += Instructions[instruction.Item1].Item2 + "\n";
+                Objeto.Text += instruction.Item4 + "\n";
+
+
+                // Delegado de la funcion que se ejecutará
+                var instructionDelegate = Instructions[instruction.Item1].Item3;
+
+                // Se manda llamar a la funcion de la instruccion
+                instructionDelegate.Invoke(m);
+            }
+            else
+                return false;
+
+            return true;
 
         }
 
