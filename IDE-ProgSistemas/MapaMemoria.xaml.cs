@@ -119,7 +119,7 @@ namespace IDE_ProgSistemas
             Registers = new Dictionary<string, MyInt>()
             {
               { "CP", new MyInt(0xffffff)},
-              { "A", new MyInt(0xffffff) },
+              { "A", new MyInt(0x000000) },
               { "X", new MyInt(0xffffff) },
               { "L", new MyInt(0xffffff) },
               { "SW", new MyInt(0xffffff)},
@@ -181,8 +181,8 @@ namespace IDE_ProgSistemas
 
         private void STCH(int m)
         {
-            string t = Registers["A"].HEX6.Substring(3,2);
-            MemoryMap.WriteByte(m, Convert.ToInt32(t,16));
+            int t = Registers["A"].Value & 0x000000ff;
+            MemoryMap.WriteByte(m, t);
         }
 
         private void STA(int m)
@@ -220,7 +220,9 @@ namespace IDE_ProgSistemas
 
         private void LDCH(int m)
         {
-            Registers["A"].Value= Convert.ToInt32(Registers["A"].HEX4 + MemoryMap.ReadByte(m).ToString("X2"),16);           
+            int aAux = Registers["A"].Value & 0xffff00; // Variable auxiliar con el byte mas a la derecha en 0´s
+            Registers["A"].Value = aAux | MemoryMap.ReadByte(m);
+            //Registers["A"].Value= Convert.ToInt32(Registers["A"].HEX4 + MemoryMap.ReadByte(m).ToString("X2"),16);           
         }
 
         private void LDA(int m)
@@ -320,17 +322,20 @@ namespace IDE_ProgSistemas
 
             var instruction = MemoryMap.ReadInstruction(Registers["CP"].Value);
             Objeto.Text += instruction.Item4+"\n";
+            int m;
             if (instruction.Item2)
             {
                 Instruccion.Text += Instructions[instruction.Item1].Item1 + " " + instruction.Item3.ToString("X4") + ", X\n";
+                m = instruction.Item3+Registers["X"].Value;
             }
             else
             {
                 Instruccion.Text += Instructions[instruction.Item1].Item1 + " " + instruction.Item3.ToString("X4")+"\n";
+                m = instruction.Item3;
             }
             Efecto.Text += Instructions[instruction.Item1].Item2+"\n";
 
-            var m = instruction.Item3;
+            
             var instructionDelegate = Instructions[instruction.Item1].Item3;
 
 
@@ -339,6 +344,7 @@ namespace IDE_ProgSistemas
 
             // Se manda llamar a la funcion de la instruccion
             instructionDelegate.Invoke(m);
+
             UpdateView();
 
         }

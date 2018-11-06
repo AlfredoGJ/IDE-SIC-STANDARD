@@ -177,24 +177,35 @@ namespace IDE_ProgSistemas
                         // si tiene operando (no es instruccion RSUB)
                         if (!string.IsNullOrEmpty(row.Operando))
                         {
-                            // Si el modo de direccionamiento es indeado
+                            // Si el modo de direccionamiento es indexado
                             if (row.Operando.Contains(','))
                                 symbol = row.Operando.Split(sep)[0].Trim();
                             // El modo de direccionamiento es directo
                             else
                                 symbol = row.Operando;
-
+                            // Si es una instruccion valida
                             if (App.Tabsim.ContainsKey(symbol))
                             {
-                                row.CodigoObjeto = opCode + App.Tabsim[symbol];
+                                // Si es una instruccion indexada
+                                if (row.Operando.Contains(','))
+                                {
+                                    row.CodigoObjeto = opCode +  (  Convert.ToInt32( App.Tabsim[symbol],16) + 32768).ToString("X4");
+                                }
+                                // Si es una instruccion no indexada
+                                else
+                                {
+                                    row.CodigoObjeto = opCode + App.Tabsim[symbol];
+                                }
                             }
+                            // Si no es instruccion valida
                             else
                             {
                                 if (row.Proposicion.Contains("X"))
                                 {
                                     row.CodigoObjeto = App.OpCodes[row.Proposicion].ToString("X2") + "FFFF";
                                 }
-                                else{
+                                else
+                                {
                                     row.CodigoObjeto = App.OpCodes[row.Proposicion].ToString("X2") + "7FFF";
                                 }
                             }
@@ -285,7 +296,7 @@ namespace IDE_ProgSistemas
 
             string g = App.direccionInicio.Remove(App.direccionInicio.Length - 1, 1);
             h += "00"+ g;
-            h += "00" + App.tamaño;
+            h += App.tamaño;
             Registros.Add(h);
 
 

@@ -11,7 +11,7 @@ options {
 
 programa: inicio (proposicion)+  fin;
 inicio: ID SEP 'START' SEP NUM endl;
-fin: SEP 'END' (SEP ID)? endl?;
+fin: SEP* 'END' (SEP ID)? endl?;
 proposicion: (instruccion | directiva | rsub) endl;
 instruccion: ID? SEP INSTRUCCION SEP opinstruccion ;
 directiva: ID? SEP (bytedir | (TIPODIRECTIVA SEP NUM));

@@ -267,7 +267,7 @@ namespace IDE_ProgSistemas
             uint t = (uint)Int32.Parse(PC, System.Globalization.NumberStyles.HexNumber);
             uint t1 = (uint)Int32.Parse(App.direccionInicio, System.Globalization.NumberStyles.HexNumber);
             t = t - t1;
-            App.tamaño = t.ToString("X");
+            App.tamaño = t.ToString("X6");
 
             CodeRow final = new CodeRow("","END",context.ID()?.GetText());
             final.CP = PC;
