@@ -179,9 +179,10 @@ namespace IDE_ProgSistemas
             MemoryMap.WriteWord(m,Registers["L"].HEX6);
         }
 
+        //PEDO
         private void STCH(int m)
         {
-            int t = Registers["A"].Value & 0x000000ff;
+            int t =Registers["A"].Value & 0x000000ff;
             MemoryMap.WriteByte(m, t);
         }
 
@@ -191,7 +192,7 @@ namespace IDE_ProgSistemas
             MemoryMap.WriteWord(m,MemoryMap.ReadWord(Registers["A"].Value).ToString("X6"));
         }
 
-        //CHECAR 
+       
         private void RSUB(int m)
         {
             Registers["CP"].Value = MemoryMap.ReadWord(Registers["L"].Value);

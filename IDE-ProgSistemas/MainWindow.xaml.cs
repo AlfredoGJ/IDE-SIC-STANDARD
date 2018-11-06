@@ -333,10 +333,18 @@ namespace IDE_ProgSistemas
                         
                         try
                         {
-                            
-                            uint codiggoObjeto = (uint)Int32.Parse(line.CodigoObjeto, System.Globalization.NumberStyles.HexNumber);
-                            T += codiggoObjeto.ToString("X" + line.CodigoObjeto.Length.ToString());
-                            bytes += line.CodigoObjeto.Length / 2;
+                            //falla
+                            if (line.Proposicion == "BYTE")
+                            {
+                                T += line.CodigoObjeto;
+                                bytes += line.CodigoObjeto.Length / 2;
+                            }
+                            else
+                            {
+                                uint codiggoObjeto = (uint)Int32.Parse(line.CodigoObjeto, System.Globalization.NumberStyles.HexNumber);
+                                T += codiggoObjeto.ToString("X" + line.CodigoObjeto.Length.ToString());
+                                bytes += line.CodigoObjeto.Length / 2;
+                            }
                         }
                         catch
                         {
