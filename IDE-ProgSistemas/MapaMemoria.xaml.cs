@@ -220,12 +220,12 @@ namespace IDE_ProgSistemas
 
         private void LDCH(int m)
         {
-            throw new NotImplementedException();
+            Registers["A"].Value= Convert.ToInt32(Registers["A"].HEX4 + MemoryMap.ReadByte(m).ToString("X2"),16);           
         }
 
         private void LDA(int m)
         {
-            Registers["X"].Value = MemoryMap.ReadWord(m);
+            Registers["A"].Value = MemoryMap.ReadWord(m);
         }
 
         private void JSUB(int m)
@@ -282,7 +282,7 @@ namespace IDE_ProgSistemas
 
         private void ADD(int m)
         {
-            Registers["A"].Value = Registers["A"].Value + MemoryMap.ReadWord(m);
+            Registers["A"].Value = MemoryMap.ReadWord(Registers["A"].Value) + MemoryMap.ReadWord(m);
         }
 
         private void AND(int m)
