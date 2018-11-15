@@ -47,7 +47,7 @@ namespace IDE_ProgSistemas
                 if (Format2.INST2RR() != null)
                 {
                     line.Proposicion = Format2.INST2RR().GetText();
-                    line.Operando = Format2.REG()[0].ToString() +","+ Format2.REG()[1].ToString();
+                    line.Operando = Format2.REG(0).GetText() +","+ Format2.REG(1)?.GetText();
                 }
                 ban = true;
                

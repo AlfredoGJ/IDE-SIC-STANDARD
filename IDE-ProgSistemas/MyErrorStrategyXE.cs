@@ -17,7 +17,7 @@ namespace IDE_ProgSistemas
             }
             catch
             {
-
+                Console.WriteLine("EROROFOSFOSODC");
             }
         }
 

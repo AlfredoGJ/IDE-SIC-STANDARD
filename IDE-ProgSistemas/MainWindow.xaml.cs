@@ -173,14 +173,15 @@ namespace IDE_ProgSistemas
 
                 SIC_XELexer lex = new SIC_XELexer(new AntlrInputStream(input));
                 CommonTokenStream tokens = new CommonTokenStream(lex);
-                lex.RemoveErrorListeners();
-                lex.AddErrorListener(myErrorListener);
+
+                //lex.RemoveErrorListeners();
+                //lex.AddErrorListener(myErrorListener);
 
 
                 // Create and initialize Parser
 
                 SIC_XEParser parser = new SIC_XEParser(tokens);
-                //parser.ErrorHandler = myErrorStrategy;
+                parser.ErrorHandler = myErrorStrategy;
 
                 //parser.RemoveErrorListeners();
                 //parser.AddErrorListener(myErrorListener);

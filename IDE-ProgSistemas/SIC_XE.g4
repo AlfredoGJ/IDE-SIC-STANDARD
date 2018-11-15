@@ -14,7 +14,7 @@ fin: SEP 'END' (SEP ID)? endl?;
 proposicion: (instruccion | directiva | RSUB) SEP? endl;
 instruccion: ID? SEP (format1 | format2 | (EXT? format3));
 format1: INST1;
-format2: (INST2RR SEP REG SEP ',' SEP REG) | (INST2RN SEP REG SEP ',' SEP NUM) | ('SVC' SEP NUM) | (INST2R SEP REG);
+format2: (INST2RR SEP REG SEP? ',' SEP? REG) | (INST2RN SEP REG SEP? ',' SEP? NUM) | ('SVC' SEP NUM) | (INST2R SEP REG);
 format3: INST3 SEP MODIR? (ID | NUM) INDEX?;
 RSUB: ((ID SEP) | SEP)? 'RSUB' SEP?;
 directiva: ID? SEP (bytedir | (TIPODIRECTIVA SEP NUM) | BASE SEP ID);
