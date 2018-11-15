@@ -20,6 +20,8 @@ namespace IDE_ProgSistemas
         public static string direccionInicio = "";
         public static string tamaño = "";
         public static string nombre = "";
+        public static string tipoArchivo="";
+        public static int CP=0;
 
         //public static Dictionary<String, int> OpCodes = new Dictionary<String, int>()
         //{

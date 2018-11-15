@@ -70,13 +70,22 @@
     <Compile Include="MemoryMap.cs" />
     <Compile Include="MemorySlot.cs" />
     <Compile Include="MyErrorListener.cs" />
+    <Compile Include="MyErrorListenerXE.cs" />
     <Compile Include="MyErrorStrategy.cs" />
+    <Compile Include="MyErrorStrategyXE.cs" />
     <Compile Include="MyGramarVisitor.cs" />
+    <Compile Include="MyGrammarVisitorXE.cs" />
     <Compile Include="SIC_STD.g4.lexer.cs">
       <DependentUpon>SIC_STD.g4</DependentUpon>
     </Compile>
     <Compile Include="SIC_STD.g4.parser.cs">
       <DependentUpon>SIC_STD.g4</DependentUpon>
+    </Compile>
+    <Compile Include="SIC_XE.g4.lexer.cs">
+      <DependentUpon>SIC_XE.g4</DependentUpon>
+    </Compile>
+    <Compile Include="SIC_XE.g4.parser.cs">
+      <DependentUpon>SIC_XE.g4</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -119,6 +128,10 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Antlr4 Include="SIC_STD.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>IDE_ProgSistemas</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Include="SIC_XE.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>IDE_ProgSistemas</CustomToolNamespace>
     </Antlr4>

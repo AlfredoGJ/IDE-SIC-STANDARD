@@ -355,7 +355,10 @@ namespace IDE_ProgSistemas
 
                 // Se verifica que el programa no se salga del area de memoria
                 if (!(m <= StartAddress + ProgramSize && m >= StartAddress))
+                {
+                    MessageBox.Show("el programa finalizo");
                     return false;
+                }
 
                 // Cambio de valores en la interfaz
                 Efecto.Text += Instructions[instruction.Item1].Item2 + "\n";

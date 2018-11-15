@@ -48,7 +48,6 @@ namespace IDE_ProgSistemas
 
             CodeRow line = new CodeRow();  // Inicializacion solo para que no chille el compilador, mas adelante se cambian los valores
 
-
             // Si la proposicion es una instruccion
             var isInstruccion = context.instruccion();
 
@@ -74,7 +73,6 @@ namespace IDE_ProgSistemas
             var isDirectiva = context.directiva();
             if (isDirectiva != null)
             {
-
 
                 // Si la directiva no es BYTE
                 var byteType = isDirectiva.bytedir();

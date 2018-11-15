@@ -45,7 +45,7 @@ namespace IDE_ProgSistemas
         {
             ClearEverything();
             OpenFileDialog openFile = new OpenFileDialog();
-            openFile.Filter = "ASM Files (*.asm)|*.ASM";
+            openFile.Filter = "ASM Files (*.asm)|*.asm|ASMX Files (*.asmx)|*.asmx";
             if (openFile.ShowDialog() == true)
             {
                 Stream stream = File.OpenRead(openFile.FileName);
@@ -57,6 +57,9 @@ namespace IDE_ProgSistemas
                 {
                     sinput += (char)c;
                 }
+
+
+                App.tipoArchivo = openFile.SafeFileName.Last().ToString();
 
                 stream.Close();
                 CodigoFuente.Text = sinput;
@@ -99,60 +102,121 @@ namespace IDE_ProgSistemas
             ClearEverything();
 
             string input = CodigoFuente.Text;
-            
 
-            // Create Listeners
-
-            MyErrorListener myErrorListener = new MyErrorListener();
-            MyErrorStrategy myErrorStrategy = new MyErrorStrategy();
-            MyGramarVisitor myGramarVisitor = new MyGramarVisitor();
-
-            // Create and initialize Lexer
-
-            SIC_STDLexer lex = new SIC_STDLexer(new AntlrInputStream(input));
-            CommonTokenStream tokens = new CommonTokenStream(lex);
-            lex.RemoveErrorListeners();
-            lex.AddErrorListener(myErrorListener);
-
-
-            // Create and initialize Parser
-
-            SIC_STDParser parser = new SIC_STDParser(tokens);
-            parser.ErrorHandler = myErrorStrategy;
-
-            parser.RemoveErrorListeners();
-            parser.AddErrorListener(myErrorListener);
-
-            parser.RemoveParseListeners();
-            parser.AddParseListener(myGramarVisitor);
-          
-
-            // Do the parseichon 
-            parser.programa();
-           
-
-
-            // Vaciar los datos obtenidos en la interfaz
-
-
-            // Lista de errores
-            if (App.ListaErrores.Count > 0)
+            // Si el programa es de tipo asm estandar
+            if (App.tipoArchivo == "m" || App.tipoArchivo == "M")
             {
-                foreach (string s in App.ListaErrores)
-                    Errores.Text += s+'\n';
-            }   
+                // Create Listeners
+
+                MyErrorListener myErrorListener = new MyErrorListener();
+                MyErrorStrategy myErrorStrategy = new MyErrorStrategy();
+                MyGramarVisitor myGramarVisitor = new MyGramarVisitor();
+
+                // Create and initialize Lexer
+
+                SIC_STDLexer lex = new SIC_STDLexer(new AntlrInputStream(input));
+                CommonTokenStream tokens = new CommonTokenStream(lex);
+                lex.RemoveErrorListeners();
+                lex.AddErrorListener(myErrorListener);
+
+
+                // Create and initialize Parser
+
+                SIC_STDParser parser = new SIC_STDParser(tokens);
+                parser.ErrorHandler = myErrorStrategy;
+
+                parser.RemoveErrorListeners();
+                parser.AddErrorListener(myErrorListener);
+
+                parser.RemoveParseListeners();
+                parser.AddParseListener(myGramarVisitor);
+
+
+                // Do the parseichon 
+                parser.programa();
+
+
+                // Vaciar los datos obtenidos en la interfaz
+
+
+                // Lista de errores
+                if (App.ListaErrores.Count > 0)
+                {
+                    foreach (string s in App.ListaErrores)
+                        Errores.Text += s + '\n';
+                }
+                else
+                    Errores.Text = "No se encontraron errores";
+
+                ArchivoIntermedio.ItemsSource = App.Codigo;
+
+
+                // Tabsim
+                Tabsim.ItemsSource = App.Tabsim.ToList();
+                tam.Content += App.tamaño;
+
+                Paso2();
+                generaresgistros();
+
+
+            }
+            // El archivo se sic extendida
             else
-                Errores.Text = "No se encontraron errores";
+            {
+                App.CP = 0;
 
-            ArchivoIntermedio.ItemsSource = App.Codigo;
+                MyErrorListenerXE myErrorListener = new MyErrorListenerXE();
+                MyErrorStrategyXE myErrorStrategy = new MyErrorStrategyXE();
+                MyGrammarVisitorXE myGramarVisitor = new MyGrammarVisitorXE();
+
+                // Create and initialize Lexer
+
+                SIC_XELexer lex = new SIC_XELexer(new AntlrInputStream(input));
+                CommonTokenStream tokens = new CommonTokenStream(lex);
+                lex.RemoveErrorListeners();
+                lex.AddErrorListener(myErrorListener);
 
 
-            // Tabsim
-            Tabsim.ItemsSource= App.Tabsim.ToList();
-            tam.Content += App.tamaño;
+                // Create and initialize Parser
 
-            Paso2();
-            generaresgistros();
+                SIC_XEParser parser = new SIC_XEParser(tokens);
+                //parser.ErrorHandler = myErrorStrategy;
+
+                //parser.RemoveErrorListeners();
+                //parser.AddErrorListener(myErrorListener);
+
+                parser.RemoveParseListeners();
+                parser.AddParseListener(myGramarVisitor);
+
+
+                // Do the parseichon 
+                parser.programa();
+
+
+                // Vaciar los datos obtenidos en la interfaz
+
+
+                // Lista de errores
+                if (App.ListaErrores.Count > 0)
+                {
+                    foreach (string s in App.ListaErrores)
+                        Errores.Text += s + '\n';
+                }
+                else
+                    Errores.Text = "No se encontraron errores";
+
+                ArchivoIntermedio.ItemsSource = App.Codigo;
+
+
+                // Tabsim
+                Tabsim.ItemsSource = App.Tabsim.ToList();
+                tam.Content += App.tamaño;
+
+            }
+
+
+
+           
 
 
         }
