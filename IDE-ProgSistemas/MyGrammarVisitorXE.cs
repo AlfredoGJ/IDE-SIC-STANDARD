@@ -17,6 +17,7 @@ namespace IDE_ProgSistemas
 
         public override void ExitInstruccion([NotNull] SIC_XEParser.InstruccionContext context)
         {
+            bool ban = false;
 
             CodeRow line= new CodeRow();
             line.Etiqueta=context.ID()?.GetText();
@@ -29,12 +30,31 @@ namespace IDE_ProgSistemas
                 line.Proposicion = context.format1().INST1().GetText();
             }
             // Formato 2
-            if (context.format1() != null)
+            if (context.format2() != null)
             {
+                App.CP+=2;
+                var Format2 = context.format2();
+                if (Format2.INST2R ()!= null)
+                {
+                    line.Proposicion = Format2.INST2R().GetText();
+                    line.Operando = Format2.REG()[0].ToString();
+                }
+                if (Format2.INST2RN() != null)
+                {
+                    line.Proposicion = Format2.INST2RN().GetText();
+                    line.Operando = Format2.REG()[0].ToString()+","+ Format2.NUM().ToString();
+                }
+                if (Format2.INST2RR() != null)
+                {
+                    line.Proposicion = Format2.INST2RR().GetText();
+                    line.Operando = Format2.REG()[0].ToString() +","+ Format2.REG()[1].ToString();
+                }
+                ban = true;
+               
 
             }
             // Formato 3
-            if (context.EXT() == null)
+            if (context.EXT() == null && ban!=true)
             {
                 App.CP += 3;
                 var Format3 = context.format3();
@@ -54,25 +74,53 @@ namespace IDE_ProgSistemas
             // Formato 4
             else
             {
-                App.CP += 4;
-                var Format3 = context.format3();
-
-                line.Proposicion = context.EXT().GetText()+ Format3.INST3().GetText();
-
-                if (Format3.ID() != null)
+                if (ban != true)
                 {
-                    line.Operando = Format3.MODIR()?.GetText() + Format3.ID()?.GetText() + Format3.INDEX()?.GetText();
+                    App.CP += 4;
+                    var Format3 = context.format3();
+
+                    line.Proposicion = context.EXT().GetText() + Format3.INST3().GetText();
+
+                    if (Format3.ID() != null)
+                    {
+                        line.Operando = Format3.MODIR()?.GetText() + Format3.ID()?.GetText() + Format3.INDEX()?.GetText();
+                    }
+                    else
+                    {
+                        line.Operando = Format3.MODIR()?.GetText() + Format3.NUM()?.GetText() + Format3.INDEX()?.GetText();
+                    }
                 }
-                else
+            }
+           
+
+            App.Codigo.Add(line);
+            if (!String.IsNullOrEmpty(line.Etiqueta))
+            {
+                if (!App.Tabsim.ContainsKey(line.Etiqueta))
                 {
-                    line.Operando = Format3.MODIR()?.GetText() + Format3.NUM()?.GetText() + Format3.INDEX()?.GetText();
+                    if (hayerror(context.Start.Line) == false)
+                    {
+                        App.Tabsim.Add(line.Etiqueta, line.CP);
+                    }
                 }
+
             }
 
 
-            App.Codigo.Add(line);
+        }
 
-
+        public bool hayerror(int line)
+        {
+            bool res = false;
+            for (int i = 0; i < App.listalinea.Count; i++)
+            {
+                if (App.listalinea[i] == line)
+                {
+                    res = true;
+                    break;
+                }
+            }
+            return res;
         }
 
         public override void ExitDirectiva([NotNull] SIC_XEParser.DirectivaContext context)
@@ -191,6 +239,17 @@ namespace IDE_ProgSistemas
 
             }
             line.CP = App.CP.ToString("X4");
+            if (!String.IsNullOrEmpty(line.Etiqueta))
+            {
+                if (!App.Tabsim.ContainsKey(line.Etiqueta))
+                {
+                    if (hayerror(context.Start.Line) == false)
+                    {
+                        App.Tabsim.Add(line.Etiqueta, line.CP);
+                    }
+                }
+
+            }
             App.Codigo.Add(line);
 
         }
