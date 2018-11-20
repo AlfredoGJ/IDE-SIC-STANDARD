@@ -46,6 +46,7 @@ namespace IDE_ProgSistemas
                 }
                 if (Format2.INST2RR() != null)
                 {
+
                    if (Format2.REG().Length == 1)
                     {
                         App.banaviso = true;
@@ -55,7 +56,7 @@ namespace IDE_ProgSistemas
                     else
                     {
                         line.Proposicion = Format2.INST2RR().GetText();
-                        line.Operando = Format2.REG(0).ToString() + "," + Format2.REG(1).ToString();
+                        line.Operando = Format2.REG(0).ToString() + "," + Format2.REG(1)?.ToString();
                     }
                 }
                 ban = true;
