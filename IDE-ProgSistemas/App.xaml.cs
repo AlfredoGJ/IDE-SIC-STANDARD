@@ -22,6 +22,8 @@ namespace IDE_ProgSistemas
         public static string nombre = "";
         public static string tipoArchivo="";
         public static int CP=0;
+        public static bool banaviso=false;
+        public static int lineaerror;
 
         //public static Dictionary<String, int> OpCodes = new Dictionary<String, int>()
         //{

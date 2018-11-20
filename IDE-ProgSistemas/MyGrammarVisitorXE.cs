@@ -37,21 +37,28 @@ namespace IDE_ProgSistemas
                 if (Format2.INST2R ()!= null)
                 {
                     line.Proposicion = Format2.INST2R().GetText();
-                    line.Operando = Format2.REG()[0].ToString();
+                    line.Operando = Format2.REG(0).ToString();
                 }
                 if (Format2.INST2RN() != null)
                 {
                     line.Proposicion = Format2.INST2RN().GetText();
-                    line.Operando = Format2.REG()[0].ToString()+","+ Format2.NUM().ToString();
+                    line.Operando = Format2.REG(0).ToString()+","+ Format2.NUM().ToString();
                 }
                 if (Format2.INST2RR() != null)
                 {
-                    line.Proposicion = Format2.INST2RR().GetText();
-                    line.Operando = Format2.REG()[0].ToString() +","+ Format2.REG()[1].ToString();
+                   if (Format2.REG().Length == 1)
+                    {
+                        App.banaviso = true;
+                        line.Proposicion = Format2.INST2RR().GetText();
+                        line.Operando = Format2.REG(0).ToString() + "," + "X";
+                    }
+                    else
+                    {
+                        line.Proposicion = Format2.INST2RR().GetText();
+                        line.Operando = Format2.REG(0).ToString() + "," + Format2.REG(1).ToString();
+                    }
                 }
                 ban = true;
-               
-
             }
             // Formato 3
             if (context.EXT() == null && ban!=true)

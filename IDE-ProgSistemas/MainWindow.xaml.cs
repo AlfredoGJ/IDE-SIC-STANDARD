@@ -142,8 +142,10 @@ namespace IDE_ProgSistemas
                 // Lista de errores
                 if (App.ListaErrores.Count > 0)
                 {
-                    foreach (string s in App.ListaErrores)
-                        Errores.Text += s + '\n';
+
+                        foreach (string s in App.ListaErrores)
+                            Errores.Text += s + '\n';
+                    
                 }
                 else
                     Errores.Text = "No se encontraron errores";
@@ -180,10 +182,10 @@ namespace IDE_ProgSistemas
                 // Create and initialize Parser
 
                 SIC_XEParser parser = new SIC_XEParser(tokens);
-                //parser.ErrorHandler = myErrorStrategy;
+                parser.ErrorHandler = myErrorStrategy;
 
-                //parser.RemoveErrorListeners();
-                //parser.AddErrorListener(myErrorListener);
+                parser.RemoveErrorListeners();
+                parser.AddErrorListener(myErrorListener);
 
                 parser.RemoveParseListeners();
                 parser.AddParseListener(myGramarVisitor);
@@ -199,8 +201,15 @@ namespace IDE_ProgSistemas
                 // Lista de errores
                 if (App.ListaErrores.Count > 0)
                 {
-                    foreach (string s in App.ListaErrores)
-                        Errores.Text += s + '\n';
+                    if (App.banaviso != true)
+                    {
+                        foreach (string s in App.ListaErrores)
+                            Errores.Text += s + '\n';
+                    }
+                    else
+                    {
+                        Errores.Text = "No se encontraron errores";
+                    }
                 }
                 else
                     Errores.Text = "No se encontraron errores";
